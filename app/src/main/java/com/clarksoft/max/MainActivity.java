@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -183,6 +184,19 @@ public class MainActivity extends AppCompatActivity implements WahooServiceListe
     public void wahooEvent(String str) {
         mContentView = findViewById(R.id.fullscreen_content);
 
+        try {
+            String bpm_str = str.split(",")[1].split("/")[0];
+            int bpm = (int)Float.parseFloat(bpm_str);
+
+            if (bpm < 70)
+                ((TextView)mContentView).setTextColor(Color.GREEN); //green
+            if (bpm > 70 && bpm < 80)
+                ((TextView)mContentView).setTextColor(Color.YELLOW); //yellow
+            if (bpm > 80)
+                ((TextView)mContentView).setTextColor(Color.RED); //red
+        } catch (Exception e) {
+            Log.d(TAG, "wahooEvent: Initializing");
+        }
 
         ((TextView)mContentView).setText((str));
         Log.i(TAG, str);

@@ -99,7 +99,7 @@ public class WahooService extends Service implements DiscoveryListener, SensorCo
     @Override
     public void onHeartrateData(Heartrate.Data data) {
         //    Log.i(TAG, "onHeartRateData:" + data.getHeartrate());
-        updateListeners("onHeartRateData:" + data.getHeartrate());
+        updateListeners(data.getHeartrate().toString());
     }
 
     private void updateListeners( String message) {
