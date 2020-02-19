@@ -5,9 +5,6 @@
     <string name="menu_dashboard">Dashboard</string>
     <string name="menu_session">Session</string>
     <string name="menu_log">Log</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="logo_sub_caption">MAXimizing Aerobic Exercise</string>
     <string name="login_lbl_name">Name</string>
     <string name="login_lbl_password">Password</string>
@@ -15,4 +12,14 @@
     <string name="login_lbl_sign_up">Sign Up</string>
     <string name="login_lbl_or">OR</string>
     <string name="login_app_logo_description">The app\'s logo</string>
+    <string name="session_lbl_pause">Pause Session</string>
+    <string name="session_lbl_end">End Session</string>
+    <string name="session_lbl_motivation">Motivation</string>
+    <string name="session_lbl_bpm">bpm</string>
+    <string name="session_lbl_time">Total Exercise Time: 0:00</string>
+    <string name="session_lbl_session">Exercise Session</string>
+    <string name="session_str_seed_up">You\'re below your target heart rate. Try speeding up!</string>
+    <string name="session_str_slow_down">You\'re above your target heart rate. Slow down!</string>
+    <string name="session_str_keep_up">You\'re in your target heart rate zone. Keep  up  the good work!</string>
+    <string name="session_str_waiting">Waiting sensor</string>
 </resources>
