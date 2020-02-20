@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "361610169930",
+    "firebase_url": "https://maxapp-mfr.firebaseio.com",
+    "project_id": "maxapp-mfr",
+    "storage_bucket": "maxapp-mfr.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:361610169930:android:cabe9385a80b2f6a3ce0b3",
+        "android_client_info": {
+          "package_name": "com.clarksoft.max"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "361610169930-3h4335hhhsqmh5gn8pc4a36uip62ihb8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnK_NmmK_lx-Xq3Zel44Wr-myPCqCJihM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "361610169930-3h4335hhhsqmh5gn8pc4a36uip62ihb8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
