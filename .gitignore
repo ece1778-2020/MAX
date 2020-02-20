@@ -1,3 +1,6 @@
+# Google Firebase config file
+google-services.json
+
 # Built application files
 *.apk
 *.aar
