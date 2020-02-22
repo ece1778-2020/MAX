@@ -22,7 +22,7 @@
     <string name="session_str_slow_down">You\'re above your target heart rate. Slow down!</string>
     <string name="session_str_keep_up">You\'re in your target heart rate zone. Keep  up  the good work!</string>
     <string name="session_str_waiting">Waiting sensor</string>
-    <string name= "info_page_text">The MAX app helps stroke survivors improve their fitness by providing 
+    <string name="info_lbl_text">The MAX app helps stroke survivors improve their fitness by providing
 feedback regarding aerobic exercise performance. Users can enter their target heart rate range to get 
 personalized cues regarding how hard they need to exercise for.  </string>
 </resources>
