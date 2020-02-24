@@ -48,7 +48,7 @@
             app:layout_constraintTop_toBottomOf="@+id/login_max_logo" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_name"
+            android:id="@+id/login_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -62,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="@string/login_lbl_name"
+                android:hint="@string/login_lbl_email"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:textColor="#FFFFFF"
@@ -79,7 +79,7 @@
             android:layout_marginEnd="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login_name">
+            app:layout_constraintTop_toBottomOf="@+id/login_email">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
