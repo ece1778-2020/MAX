@@ -154,7 +154,7 @@ public class SessionFragment extends Fragment implements WahooServiceListener {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onDashboardFragmentInteraction(uri);
+            mListener.onSessionFragmentInteraction(uri);
         }
     }
 
@@ -187,6 +187,6 @@ public class SessionFragment extends Fragment implements WahooServiceListener {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onDashboardFragmentInteraction(Uri uri);
+        void onSessionFragmentInteraction(Uri uri);
     }
 }

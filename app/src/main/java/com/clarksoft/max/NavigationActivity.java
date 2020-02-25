@@ -82,12 +82,12 @@ public class NavigationActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDashboardFragmentInteraction(Uri uri) {
+    public void onSessionFragmentInteraction(Uri uri) {
 
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onDashboardFragmentInteraction(Uri uri) {
 
     }
 }
