@@ -35,11 +35,18 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
         password = findViewById(R.id.login_password);
 
         mAuth = FirebaseAuth.getInstance();
+
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        //updateUI(currentUser);
+        if (currentUser != null) {
+            Intent intent = new Intent(this, NavigationActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void onButtonClick(View view) {
-        Intent intent;
-
         switch (view.getId()){
             case R.id.login_btn_login:
 
@@ -59,12 +66,9 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
 
                     mAuth.signInWithEmailAndPassword(emailInput, passwordInput).addOnCompleteListener(this);
                 }
-
-                intent = new Intent(this, NavigationActivity.class);
-                startActivity(intent);
                 break;
             case R.id.login_btn_sign_up:
-                intent = new Intent(this, SignupActivity.class);
+                Intent intent = new Intent(this, SignupActivity.class);
                 startActivity(intent);
                 break;
         }
