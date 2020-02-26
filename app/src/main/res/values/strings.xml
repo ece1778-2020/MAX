@@ -23,6 +23,14 @@
     <string name="session_str_slow_down">You\'re above your target heart rate. Slow down!</string>
     <string name="session_str_keep_up">You\'re in your target heart rate zone. Keep  up  the good work!</string>
     <string name="session_str_waiting">Waiting sensor</string>
+    <string name="dashboard_lbl">Dashboard</string>
+    <string name="dashboard_current">Current</string>
+    <string name="dashboard_min">Min</string>
+    <string name="dashboard_max">Max</string>
+    <string name="dashboard_total">Total</string>
+    <string name="dashboard_target">Target</string>
+    <string name="dashboard_days">Days</string>
+    <string name="dashboard_empty">--</string>
     <string name="info_lbl_text">The MAX app helps stroke survivors improve their fitness by providing
 feedback regarding aerobic exercise performance. Users can enter their target heart rate range to get 
 personalized cues regarding how hard they need to exercise for.  </string>

@@ -15,7 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class NavigationActivity extends AppCompatActivity
         implements InfoFragment.OnFragmentInteractionListener,
-        SessionFragment.OnFragmentInteractionListener {
+        SessionFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener{
 
     private final String LOG_TAG = NavigationActivity.class.getName();
     private BottomNavigationView bottomNavigation;
@@ -31,7 +31,7 @@ public class NavigationActivity extends AppCompatActivity
                             //openFragment(SmsFragment.newInstance("", ""));
                             return true;
                         case R.id.navigation_dashboard:
-                            //openFragment(NotificationFragment.newInstance("", ""));
+                            openFragment(DashboardFragment.newInstance("", ""));
                             return true;
                         case R.id.navigation_session:
                             openFragment(SessionFragment.newInstance("", ""));
@@ -78,6 +78,11 @@ public class NavigationActivity extends AppCompatActivity
 
     @Override
     public void onInfoFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onSessionFragmentInteraction(Uri uri) {
 
     }
 
