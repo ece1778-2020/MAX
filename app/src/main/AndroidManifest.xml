@@ -16,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
+
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait">
@@ -26,14 +27,22 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".WahooService"
-            android:exported="false" />
+        <activity
+            android:name=".SignupActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.clarksoft.max.LoginActivity" />
+        </activity>
 
         <activity
             android:name=".NavigationActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <service
+            android:name=".WahooService"
+            android:exported="false" />
     </application>
 
 </manifest>
