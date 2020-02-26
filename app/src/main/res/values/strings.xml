@@ -6,12 +6,13 @@
     <string name="menu_session">Session</string>
     <string name="menu_log">Log</string>
     <string name="logo_sub_caption">MAXimizing Aerobic Exercise</string>
-    <string name="login_lbl_name">Name</string>
+    <string name="login_lbl_email">Email</string>
     <string name="login_lbl_password">Password</string>
     <string name="login_lbl_log_in">Log In</string>
     <string name="login_lbl_sign_up">Sign Up</string>
     <string name="login_lbl_or">OR</string>
     <string name="login_app_logo_description">The app\'s logo</string>
+    <string name="login_err_login_failed">Login failed</string>
     <string name="session_lbl_pause">Pause Session</string>
     <string name="session_lbl_end">End Session</string>
     <string name="session_lbl_motivation">Motivation</string>
@@ -25,4 +26,19 @@
     <string name="info_lbl_text">The MAX app helps stroke survivors improve their fitness by providing
 feedback regarding aerobic exercise performance. Users can enter their target heart rate range to get 
 personalized cues regarding how hard they need to exercise for.  </string>
+    <string name="signup_inp_email_hint">Email</string>
+    <string name="signup_inp_password_hint">Password</string>
+    <string name="signup_inp_password_conf_hint">Confirm Password</string>
+    <string name="signup_inp_username">Name</string>
+    <string name="signup_btn_signup_lbl">Sign Up</string>
+    <string name="signup_input_reg_password_hint_pattern">Min 8: mixed case, 1 num and 1 sym</string>
+    <string name="signup_input_reg_conf_password_hint_pattern">Must match password above</string>
+    <string name="signup_input_user_name_hint_pattern">At least 3 alphanumeric</string>
+    <string name="signup_err_input_email">Please enter a valid email address</string>
+    <string name="signup_err_input_pwd">Password too weak</string>
+    <string name="signup_err_input_pwd_mismatch">Password mismatch</string>
+    <string name="signup_err_input_username">Invalid username</string>
+    <string name="signup_err_email_already_in_use">Email already in use.</string>
+    <string name="signup_err_check_internet_conn">Please check your internet connection.</string>
+    <string name="signup_err_try_again_later">Failure, please try again later.</string>
 </resources>
