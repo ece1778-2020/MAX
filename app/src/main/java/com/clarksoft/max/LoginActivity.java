@@ -39,15 +39,16 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        //updateUI(currentUser);
-        if (currentUser != null) {
-            Intent intent = new Intent(this, NavigationActivity.class);
-            startActivity(intent);
-        }
+        Intent startIntent = new Intent(this, WahooService.class);
+        startService(startIntent);
+
+        Log.i(LOG_TAG, "Started service");
+
+        updateUI(currentUser, true);
     }
 
     public void onButtonClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.login_btn_login:
 
                 EditText emailEdt = email.getEditText();
@@ -60,7 +61,7 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
                     String passwordInput = passwordEdt.getText().toString();
 
                     if (emailInput.isEmpty() || passwordInput.isEmpty()) {
-                        updateUI(null);
+                        updateUI(null, false);
                         return;
                     }
 
@@ -74,11 +75,11 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
         }
     }
 
-    private void updateUI(FirebaseUser user) {
+    private void updateUI(FirebaseUser user, Boolean firstRun) {
         if (user != null) {
             Intent intent = new Intent(this, NavigationActivity.class);
             startActivity(intent);
-        } else {
+        } else if (!firstRun) {
             Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.login_err_login_failed), Toast.LENGTH_SHORT);
             toast.show();
         }
@@ -90,11 +91,11 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
             // Sign in success, update UI with the signed-in user's information
             Log.d(LOG_TAG, "signInWithEmail:success");
             FirebaseUser user = mAuth.getCurrentUser();
-            updateUI(user);
+            updateUI(user, false);
         } else {
             // If sign in fails, display a message to the user.
             Log.w(LOG_TAG, "signInWithEmail:failure", task.getException());
-            updateUI(null);
+            updateUI(null,false);
         }
     }
 }

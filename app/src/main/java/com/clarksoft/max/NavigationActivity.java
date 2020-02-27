@@ -10,15 +10,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class NavigationActivity extends AppCompatActivity
         implements InfoFragment.OnFragmentInteractionListener,
-        SessionFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener{
+        SessionFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener {
 
     private final String LOG_TAG = NavigationActivity.class.getName();
     private BottomNavigationView bottomNavigation;
+    private WahooService sensorService = null;
 
     BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -50,18 +52,22 @@ public class NavigationActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_navigation);
 
-        Intent startIntent = new Intent(this, WahooService.class);
-        startService(startIntent);
-
-        Log.i(LOG_TAG, "Started service");
-
         bottomNavigation = findViewById(R.id.bottomNavigationView);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         openFragment(InfoFragment.newInstance("", ""));
 
+        startSensorDiscovery();
+    }
+
+    private void startSensorDiscovery(){
+        if (sensorService == null && WahooService.getInstance() != null) {
+            sensorService = WahooService.getInstance();
+            sensorService.startDiscovery(); // This is the earliest we can possibly start the discovery
+        }
     }
 
     public void openFragment(Fragment fragment) {
+        startSensorDiscovery(); // Plan B in case the earliest discovery happened before the Wahoo service was ready
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_frame, fragment);
         transaction.addToBackStack(null);

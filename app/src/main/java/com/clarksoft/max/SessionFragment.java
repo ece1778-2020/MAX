@@ -30,7 +30,6 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  */
 public class SessionFragment extends Fragment implements WahooServiceListener {
 
-    private boolean registeredListener = false;
     private boolean sensorPaired = false;
     private String bpm_str="";
     private String motivation_str="";
@@ -54,6 +53,8 @@ public class SessionFragment extends Fragment implements WahooServiceListener {
 
     @Override
     public void wahooEvent(String str) {
+
+        Log.e("Sensor str --> ", str);
 
         if (parentView != null) {
             TextView textBpm = parentView.findViewById(R.id.session_lbl_bpm);
@@ -127,6 +128,9 @@ public class SessionFragment extends Fragment implements WahooServiceListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        WahooService service = WahooService.getInstance();
+        service.addListener(this);
     }
 
     @Override
@@ -137,16 +141,6 @@ public class SessionFragment extends Fragment implements WahooServiceListener {
         // Inflate the layout for this fragment
         parentView = view;
         view.setBackgroundColor(Color.WHITE);
-
-        if (!registeredListener) {
-            if (WahooService.getInstance() != null) {
-                WahooService service = WahooService.getInstance();
-                service.addListener(this);
-                registeredListener = true;
-                service.startDiscovery();
-
-            }
-        }
 
         return view;
     }
