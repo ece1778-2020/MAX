@@ -81,7 +81,7 @@ public class SettingsFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.settings_tab_layout);
         new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> tab.setText("OBJECT " + (position + 1))
+                (tab, position) -> tab.setText(position == 0 ? "User" : "Features")
         ).attach();
 
         return view;
@@ -179,10 +179,10 @@ public class SettingsFragment extends Fragment {
         @Override
         public Fragment createFragment(int position) {
             if(position == 0) {
-                return new InfoFragment();
+                return new Settings1Fragment();
             }
             else{
-                return new SessionFragment();
+                return new Settings2Fragment();
             }
         }
 

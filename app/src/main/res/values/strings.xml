@@ -53,4 +53,64 @@ personalized cues regarding how hard they need to exercise for.  </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settings_lbl_settings">Settings</string>
+    <string name="setting1_lbl_set_hr">Setting Target Heart Rate (HR) Range</string>
+    <string name="settings1_lbl_age">Age</string>
+    <string name="settings1_lbl_max_hr">Maximum HR</string>
+    <string name="settings1_lbl_min_hr">Minimum HR</string>
+    <string name="settings1_lbl_set_exercise_goal">Setting Exercise Goal</string>
+    <string name="settings1_lbl_time">Time in target\nHR range per\nweek (min)</string>
+    <string name="settings1_btn_save">Save User Settings</string>
+    <string name="settings2_lbl_reminder">Set weekly reminder\nfor exercise</string>
+    <string name="settings2_btn_save">Save Features Settings</string>
+
+    <string-array name="settings2_time_array">
+        <item>12:00 am</item>
+        <item>12:30 am</item>
+        <item>01:00 am</item>
+        <item>01:30 am</item>
+        <item>02:00 am</item>
+        <item>02:30 am</item>
+        <item>03:00 am</item>
+        <item>03:30 am</item>
+        <item>04:00 am</item>
+        <item>04:30 am</item>
+        <item>05:00 am</item>
+        <item>05:30 am</item>
+        <item>06:00 am</item>
+        <item>06:30 am</item>
+        <item>07:00 am</item>
+        <item>07:30 am</item>
+        <item>08:00 am</item>
+        <item>08:30 am</item>
+        <item>09:00 am</item>
+        <item>09:30 am</item>
+        <item>10:00 am</item>
+        <item>10:30 am</item>
+        <item>11:00 am</item>
+        <item>11:30 am</item>
+        <item>12:00 pm</item>
+        <item>12:30 pm</item>
+        <item>01:00 pm</item>
+        <item>01:30 pm</item>
+        <item>02:00 pm</item>
+        <item>02:30 pm</item>
+        <item>03:00 pm</item>
+        <item>03:30 pm</item>
+        <item>04:00 pm</item>
+        <item>04:30 pm</item>
+        <item>05:00 pm</item>
+        <item>05:30 pm</item>
+        <item>06:00 pm</item>
+        <item>06:30 pm</item>
+        <item>07:00 pm</item>
+        <item>07:30 pm</item>
+        <item>08:00 pm</item>
+        <item>08:30 pm</item>
+        <item>09:00 pm</item>
+        <item>09:30 pm</item>
+        <item>10:00 pm</item>
+        <item>10:30 pm</item>
+        <item>11:00 pm</item>
+        <item>11:30 pm</item>
+    </string-array>
 </resources>

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <View
         android:id="@+id/settings_solid_bar"
@@ -52,7 +53,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_menu_divider" />
+        app:layout_constraintTop_toBottomOf="@+id/settings_menu_divider"
+        app:tabBackground="@color/colorPrimary"
+        app:tabIndicatorColor="@color/colorPrimaryLight" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/settings_pager"
