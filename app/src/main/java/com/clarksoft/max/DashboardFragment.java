@@ -69,8 +69,6 @@ public class DashboardFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        view.setBackgroundColor(Color.WHITE);
-
         return view;
     }
 

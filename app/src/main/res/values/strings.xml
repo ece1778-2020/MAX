@@ -24,7 +24,7 @@
     <string name="session_str_keep_up">You\'re in your target heart rate zone. Keep  up  the good work!</string>
     <string name="session_str_waiting">Waiting sensor</string>
     <string name="dashboard_lbl">Dashboard</string>
-    <string name="dashboard_current">Current</string>
+    <string name="dashboard_current">Current HR</string>
     <string name="dashboard_min">Min</string>
     <string name="dashboard_max">Max</string>
     <string name="dashboard_total">Total</string>
@@ -62,6 +62,14 @@ personalized cues regarding how hard they need to exercise for.  </string>
     <string name="settings1_btn_save">Save User Settings</string>
     <string name="settings2_lbl_reminder">Set weekly reminder\nfor exercise</string>
     <string name="settings2_btn_save">Save Features Settings</string>
+    <string name="dashboard_empty_value">-- bpm</string>
+    <string name="dashboard_lbl_this_week">This Week</string>
+    <string name="dashboard_lbl_total_exercise">Total Exercise</string>
+    <string name="dashboard_lbl_target_exercise">Target Exercise</string>
+    <string name="dashboard_lbl_hr_range">HR Range</string>
+    <string name="dashboard_lbl_minimum_hr">Minimum HR</string>
+    <string name="dashboard_lbl_max_hr">Maximum HR</string>
+    <string name="dashboard_lbl_min_hr">Minimum HR</string>
 
     <string-array name="settings2_time_array">
         <item>12:00 am</item>
