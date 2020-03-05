@@ -22,7 +22,7 @@
     <string name="session_str_seed_up">You\'re below your target heart rate. Try speeding up!</string>
     <string name="session_str_slow_down">You\'re above your target heart rate. Slow down!</string>
     <string name="session_str_keep_up">You\'re in your target heart rate zone. Keep  up  the good work!</string>
-    <string name="session_str_waiting">Waiting sensor</string>
+    <string name="session_str_waiting">Awaiting sensor</string>
     <string name="dashboard_lbl">Dashboard</string>
     <string name="dashboard_current">Current HR</string>
     <string name="dashboard_min">Min</string>
@@ -70,6 +70,9 @@ personalized cues regarding how hard they need to exercise for.  </string>
     <string name="dashboard_lbl_minimum_hr">Minimum HR</string>
     <string name="dashboard_lbl_max_hr">Maximum HR</string>
     <string name="dashboard_lbl_min_hr">Minimum HR</string>
+    <string name="session_lbl_start">START SESSION</string>
+    <string name="session_lbl_resume">Resume Session</string>
+    <string name="session_lbl_still_awaiting">Still awaiting sensor. Try again later.</string>
 
     <string-array name="settings2_time_array">
         <item>12:00 am</item>
