@@ -137,11 +137,11 @@
                 style="@style/spinner_style"
                 android:layout_width="120dp"
                 android:layout_height="30dp"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="131dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/settings2_week_button_group"/>
+                app:layout_constraintTop_toBottomOf="@+id/settings2_week_button_group"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="131dp" />
 
             <TextView
                 android:id="@+id/settings2_lbl_reminder"
@@ -163,8 +163,9 @@
                 android:text="Switch"
                 android:trackTint="@color/colorPrimaryLight"
                 app:layout_constraintBaseline_toBaselineOf="@+id/settings2_lbl_reminder"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/settings2_lbl_reminder" />
+                app:layout_constraintEnd_toEndOf="@+id/settings2_vibration"
+                app:layout_constraintStart_toEndOf="@+id/settings2_lbl_reminder"
+                app:layout_constraintStart_toStartOf="@+id/settings2_vibration" />
 
             <View
                 android:id="@+id/settings2_solid_bar"
@@ -185,7 +186,7 @@
                 android:layout_marginStart="70dp"
                 android:layout_marginTop="30dp"
                 android:gravity="left"
-                android:text="@string/settings2_lbl_reminder"
+                android:text="@string/settings2_lbl_vibration_alert"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -195,6 +196,7 @@
                 android:id="@+id/settings2_vibration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
                 android:text="Switch"
                 android:trackTint="@color/colorPrimaryLight"
                 app:layout_constraintBaseline_toBaselineOf="@+id/settings2_lbl_vibration"

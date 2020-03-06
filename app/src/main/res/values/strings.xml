@@ -17,7 +17,7 @@
     <string name="session_lbl_end">End Session</string>
     <string name="session_lbl_motivation">Motivation</string>
     <string name="session_lbl_bpm">bpm</string>
-    <string name="session_lbl_time">Total Exercise Time: 0:00</string>
+    <string name="session_lbl_time">Total Exercise Time:</string>
     <string name="session_lbl_session">Exercise Session</string>
     <string name="session_str_seed_up">You\'re below your target heart rate. Try speeding up!</string>
     <string name="session_str_slow_down">You\'re above your target heart rate. Slow down!</string>
@@ -73,6 +73,7 @@ personalized cues regarding how hard they need to exercise for.  </string>
     <string name="session_lbl_start">START SESSION</string>
     <string name="session_lbl_resume">Resume Session</string>
     <string name="session_lbl_still_awaiting">Still awaiting sensor. Try again later.</string>
+    <string name="settings2_lbl_vibration_alert">Vibration alert</string>
 
     <string-array name="settings2_time_array">
         <item>12:00 am</item>

@@ -55,9 +55,19 @@
         android:text="@string/session_lbl_time"
         android:textColor="@android:color/black"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/session_chronometer"
+        app:layout_constraintStart_toStartOf="@+id/session_main_rectangle"
         app:layout_constraintTop_toBottomOf="@+id/menu_divider" />
+
+    <Chronometer
+        android:id="@+id/session_chronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/session_lbl_time"
+        app:layout_constraintEnd_toEndOf="@+id/session_main_rectangle"
+        app:layout_constraintStart_toEndOf="@+id/session_lbl_time" />
 
 
     <androidx.cardview.widget.CardView
@@ -72,8 +82,8 @@
         app:layout_constraintTop_toBottomOf="@+id/session_lbl_time">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_height="match_parent"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/session_lbl_bpm"
