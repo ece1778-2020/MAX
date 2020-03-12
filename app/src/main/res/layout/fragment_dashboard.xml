@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".SessionFragment">
-
 
     <View
         android:id="@+id/session_solid_bar"
@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/session_lbl_session"
+        android:id="@+id/dashboard_lbl_dashboard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dashboard_lbl"
@@ -45,203 +45,240 @@
         android:background="@drawable/divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/session_lbl_session" />
+        app:layout_constraintTop_toBottomOf="@+id/dashboard_lbl_dashboard" />
 
-    <ImageView
-        android:id="@+id/dashboard_heart_img"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/menu_divider"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintTop_toBottomOf="@+id/menu_divider">
 
-    <ImageView
-        android:id="@+id/dashboard_running_img"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_heart_img"
-        app:layout_constraintVertical_bias="0.100000024" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/dashboard_min"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="150dp"
-        android:text="@string/dashboard_min"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_heart_img"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_current_data" />
 
-    <TextView
-        android:id="@+id/dashboard_min_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_empty"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_current"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_current_data" />
+            <ImageView
+                android:id="@+id/dashboard_max_logo_orange"
+                android:layout_width="350dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="25dp"
+                android:src="@drawable/max_logo_orange"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/dashboard_target"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="150dp"
-        android:text="@string/dashboard_target"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_running_img"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_total_data" />
+            <ImageView
+                android:id="@+id/dashboard_heart_with_beat"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="25dp"
+                android:src="@drawable/heart_with_beat"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dashboard_max_logo_orange" />
 
-    <TextView
-        android:id="@+id/dashboard_target_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_empty"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_target"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_total_data" />
+            <TextView
+                android:id="@+id/dashboard_lbl_currentHR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="26dp"
+                android:text="@string/dashboard_current"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/dashboard_heart_with_beat"
+                app:layout_constraintTop_toTopOf="@+id/dashboard_heart_with_beat" />
 
-    <TextView
-        android:id="@+id/dashboard_max"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="150dp"
-        android:text="@string/dashboard_max"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_heart_img"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_min" />
+            <TextView
+                android:id="@+id/dashboard_HR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard_empty_value"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@+id/dashboard_lbl_currentHR"
+                app:layout_constraintEnd_toEndOf="@+id/dashboard_total_exercise" />
 
-    <TextView
-        android:id="@+id/dashboard_max_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_empty"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_current"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_min" />
+            <ProgressBar
+                android:id="@+id/dashboard_sensor_loading"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:layout_marginTop="8dp"
+                android:progress="0"
+                app:layout_constraintEnd_toEndOf="@+id/dashboard_HR"
+                app:layout_constraintStart_toEndOf="@+id/dashboard_heart_with_beat"
+                app:layout_constraintStart_toStartOf="@+id/dashboard_lbl_currentHR"
+                app:layout_constraintTop_toBottomOf="@+id/dashboard_lbl_currentHR" />
 
-    <TextView
-        android:id="@+id/dashboard_days"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="150dp"
-        android:text="@string/dashboard_days"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.577"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_running_img"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_target" />
+            <ImageView
+                android:id="@+id/dashboard_running_man"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="25dp"
+                android:src="@drawable/running_man"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dashboard_heart_with_beat" />
 
-    <TextView
-        android:id="@+id/dashboard_days_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_empty"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_target"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_target" />
+            <TextView
+                android:id="@+id/dashboard_lbl_this_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/dashboard_lbl_this_week"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/dashboard_running_man"
+                app:layout_constraintTop_toTopOf="@+id/dashboard_running_man" />
 
-    <TextView
-        android:id="@+id/dashboard_current"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="150dp"
-        android:text="@string/dashboard_current"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_heart_img"
-        app:layout_constraintTop_toBottomOf="@+id/menu_divider"
-        app:layout_constraintVertical_bias="0.22000003" />
+            <TextView
+                android:id="@+id/dashboard_lbl_total_exercise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/dashboard_lbl_total_exercise"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/dashboard_running_man"
+                app:layout_constraintTop_toBottomOf="@+id/dashboard_lbl_this_week" />
 
-    <TextView
-        android:id="@+id/dashboard_current_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_empty"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_current"
-        app:layout_constraintTop_toBottomOf="@+id/menu_divider"
-        app:layout_constraintVertical_bias="0.21000000" />
+            <TextView
+                android:id="@+id/dashboard_total_exercise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50 min"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@+id/dashboard_lbl_total_exercise"
+                app:layout_constraintEnd_toEndOf="@+id/dashboard_target_exercise" />
 
-    <TextView
-        android:id="@+id/dashboard_total"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="150dp"
-        android:text="@string/dashboard_total"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_running_img"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_max"
-        app:layout_constraintVertical_bias="0.13" />
+            <TextView
+                android:id="@+id/dashboard_lbl_target_exercise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/dashboard_lbl_target_exercise"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/dashboard_running_man"
+                app:layout_constraintTop_toBottomOf="@+id/dashboard_lbl_total_exercise" />
 
-    <TextView
-        android:id="@+id/dashboard_total_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_empty"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_target"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_max"
-        app:layout_constraintVertical_bias="0.11" />
+            <TextView
+                android:id="@+id/dashboard_target_exercise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="22 min"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@+id/dashboard_lbl_target_exercise"
+                app:layout_constraintEnd_toEndOf="@+id/dashboard_days" />
+
+            <TextView
+                android:id="@+id/dashboard_lbl_days"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/dashboard_days"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/dashboard_running_man"
+                app:layout_constraintTop_toBottomOf="@+id/dashboard_lbl_target_exercise" />
+
+            <TextView
+                android:id="@+id/dashboard_days"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2 days"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@+id/dashboard_lbl_days"
+                app:layout_constraintEnd_toEndOf="@+id/dashboard_max_hr" />
+
+            <ImageView
+                android:id="@+id/dashboard_target"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="25dp"
+                android:src="@drawable/target"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dashboard_running_man" />
+
+            <TextView
+                android:id="@+id/dashboard_lbl_hr_range"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/dashboard_lbl_hr_range"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/dashboard_target"
+                app:layout_constraintTop_toTopOf="@+id/dashboard_target" />
+
+            <TextView
+                android:id="@+id/dashboard_lbl_max_hr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/dashboard_lbl_max_hr"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/dashboard_target"
+                app:layout_constraintTop_toBottomOf="@+id/dashboard_lbl_hr_range" />
+
+            <TextView
+                android:id="@+id/dashboard_max_hr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="120 bpm"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@+id/dashboard_lbl_max_hr"
+                app:layout_constraintEnd_toEndOf="@+id/dashboard_min_hr" />
+
+            <TextView
+                android:id="@+id/dashboard_lbl_min_hr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/dashboard_lbl_min_hr"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/dashboard_target"
+                app:layout_constraintTop_toBottomOf="@+id/dashboard_lbl_max_hr" />
+
+            <TextView
+                android:id="@+id/dashboard_min_hr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="100 bpm"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@+id/dashboard_lbl_min_hr"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/dashboard_lbl_min_hr" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-    <!--<?xml version="1.0" encoding="utf-8"?>-->
-    <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--    xmlns:tools="http://schemas.android.com/tools"-->
-    <!--    android:layout_width="match_parent"-->
-    <!--    android:layout_height="match_parent"-->
-    <!--    tools:context=".DashboardFragment">-->
-
-    <!--    &lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;-->
-    <!--    <TextView-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:text="@string/hello_blank_fragment" />-->
-
-    <!--</FrameLayout>-->

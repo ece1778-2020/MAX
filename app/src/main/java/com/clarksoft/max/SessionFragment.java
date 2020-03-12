@@ -1,8 +1,10 @@
 package com.clarksoft.max;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -10,12 +12,18 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -28,13 +36,29 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  * Use the {@link SessionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SessionFragment extends Fragment implements WahooServiceListener {
+public class SessionFragment extends Fragment {
 
-    private boolean sensorPaired = false;
-    private String bpm_str="";
-    private String motivation_str="";
+    private int sensorPaired = 0;
+    private int pairingProgress;
+    private String bpm_str = "";
+    private int bpm;
+
+    private String motivation_str = "";
     private View parentView;
     private WahooService mService;
+
+    private TextView textBpm;
+    private TextView textMotivation;
+    private CardView card;
+    private ProgressBar sensorLoading;
+
+    private Chronometer session_chronometer;
+    private long timer_base = 0;
+    private boolean running = false;
+
+    private Button session_btn_start, session_btn_pause, session_btn_end;
+    private int session = 0;
+    private BottomNavigationView bottomNavigation;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,72 +75,68 @@ public class SessionFragment extends Fragment implements WahooServiceListener {
         // Required empty public constructor
     }
 
-    @Override
-    public void wahooEvent(String str) {
+    BroadcastReceiver receiverUpdateDownload = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
-        Log.e("Sensor str --> ", str);
+            String bpm_str = intent.getStringExtra("bpm_str");
+            int bpm = intent.getIntExtra("bpm", 0);
+            sensorPaired = intent.getIntExtra("sensorPaired", 0);
+            int pairingProgress = intent.getIntExtra("pairingProgress", 0);
 
-        if (parentView != null) {
-            TextView textBpm = parentView.findViewById(R.id.session_lbl_bpm);
-            TextView textMotivation = parentView.findViewById(R.id.session_lbl_motivation);
-            CardView card = parentView.findViewById(R.id.session_main_rectangle);
-            ProgressBar sensorLoading = parentView.findViewById(R.id.sensor_loading);
+            sensorHandler(bpm_str, bpm, sensorPaired, pairingProgress);
+        }
+    };
 
-            if (!sensorPaired){
-                bpm_str = getString(R.string.session_str_waiting);
-                textMotivation.setVisibility(View.INVISIBLE);
-                sensorLoading.setVisibility(View.VISIBLE);
-                sensorPaired = true;
+    public void sensorHandler(String str, int bpm_data, int sensorPaired_data, int pairingProgress_data) {
+        bpm = bpm_data;
+        pairingProgress = pairingProgress_data;
+        sensorPaired = sensorPaired_data;
+        if (sensorPaired == 0 || str.contains("--")) {
+            bpm_str = getString(R.string.session_str_waiting);
+            textMotivation.setVisibility(View.INVISIBLE);
+            sensorLoading.setVisibility(View.VISIBLE);
+            card.setCardBackgroundColor(Color.parseColor("#FF8BC34A")); // green
+        } else {
+            bpm_str = str;
+        }
+
+        sensorLoading.setProgress(pairingProgress);
+
+        textBpm.setText(bpm_str);
+        textMotivation.setText(motivation_str);
+
+
+        if (bpm > -1) {
+            if (bpm < 70) {
+                card.setCardBackgroundColor(Color.parseColor("#FFF1D346")); //yellow
+                motivation_str = getString(R.string.session_str_seed_up);
+            }
+            if (bpm >= 70 && bpm < 80) {
+                card.setCardBackgroundColor(Color.parseColor("#FF8BC34A")); // green
+                motivation_str = getString(R.string.session_str_keep_up);
+            }
+            if (bpm >= 80) {
+                card.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary)); //red
+                motivation_str = getString(R.string.session_str_slow_down);
             }
 
-
-            textBpm.setText(bpm_str);
+            textMotivation.setVisibility(View.VISIBLE);
+            sensorLoading.setVisibility(View.INVISIBLE);
             textMotivation.setText(motivation_str);
-
-            try {
-                bpm_str = str.split(",")[1].split("/")[0];
-                int bpm = (int) Float.parseFloat(bpm_str);
-                bpm_str +=  " bpm";
-
-                if (bpm < 70) {
-                    card.setCardBackgroundColor(Color.parseColor("#FFF1D346")); //yellow
-                    motivation_str = getString(R.string.session_str_seed_up);
-                }
-                if (bpm >= 70 && bpm < 80) {
-                    card.setCardBackgroundColor(Color.parseColor("#FF8BC34A")); // green
-                    motivation_str = getString(R.string.session_str_keep_up);
-                }
-                if (bpm >= 80) {
-                    card.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary)); //red
-                    motivation_str = getString(R.string.session_str_slow_down);
-                }
-
-                textMotivation.setVisibility(View.VISIBLE);
-                sensorLoading.setVisibility(View.INVISIBLE);
-                textMotivation.setText(motivation_str);
-
-            } catch (Exception e) {
-                Log.d(TAG, "wahooEvent: Initializing");
-            }
 
             textBpm.setText(bpm_str);
         }
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SessionFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SessionFragment newInstance(String param1, String param2) {
+
+    public static SessionFragment newInstance(int bpm, String bpm_str, int sensorPaired, int pairingProgress) {
         SessionFragment fragment = new SessionFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt("bpm", bpm);
+        args.putString("bpm_str", bpm_str);
+        args.putInt("sensorPaired", sensorPaired);
+        args.putInt("pairingProgress", pairingProgress);
         fragment.setArguments(args);
         return fragment;
     }
@@ -125,12 +145,11 @@ public class SessionFragment extends Fragment implements WahooServiceListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            bpm = getArguments().getInt("bpm");
+            bpm_str = getArguments().getString("bpm_str");
+            sensorPaired = getArguments().getInt("sensorPaired");
+            pairingProgress = getArguments().getInt("pairingProgress");
         }
-
-        WahooService service = WahooService.getInstance();
-        service.addListener(this);
     }
 
     @Override
@@ -142,7 +161,102 @@ public class SessionFragment extends Fragment implements WahooServiceListener {
         parentView = view;
         view.setBackgroundColor(Color.WHITE);
 
+        textBpm = view.findViewById(R.id.session_lbl_bpm);
+        textMotivation = view.findViewById(R.id.session_lbl_motivation);
+        sensorLoading = view.findViewById(R.id.sensor_loading);
+        card = view.findViewById(R.id.session_main_rectangle);
+
+        session_btn_start = view.findViewById(R.id.session_btn_start);
+        session_btn_pause = view.findViewById(R.id.session_btn_pause);
+        session_btn_end = view.findViewById(R.id.session_btn_end);
+
+        bottomNavigation = getActivity().findViewById(R.id.bottomNavigationView);
+
+        session_chronometer = view.findViewById(R.id.session_chronometer);
+        session_chronometer.setBase(SystemClock.elapsedRealtime());
+
+        session_btn_pause.setVisibility(View.INVISIBLE);
+        session_btn_end.setVisibility(View.INVISIBLE);
+
+        session_btn_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                button_reaction(view);
+            }
+        });
+
+        session_btn_pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                button_reaction(view);
+            }
+        });
+
+        session_btn_end.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                button_reaction(view);
+            }
+        });
+
+        if (sensorPaired == 0) {
+            bpm_str = getString(R.string.session_str_waiting);
+            textBpm.setText(bpm_str);
+            textMotivation.setVisibility(View.INVISIBLE);
+            sensorLoading.setVisibility(View.VISIBLE);
+            sensorLoading.setProgress(pairingProgress);
+        }
+
+        IntentFilter filter = new IntentFilter("sensor_broadcast");
+        getActivity().registerReceiver(receiverUpdateDownload, filter);
+
         return view;
+    }
+
+    private void button_reaction(View view) {
+
+        switch (view.getId()) {
+            case R.id.session_btn_start:
+                if (sensorPaired == 0) {
+                    Toast.makeText(getContext(), R.string.session_lbl_still_awaiting, Toast.LENGTH_LONG).show();
+                    break;
+                }
+                session_btn_start.setVisibility(View.INVISIBLE);
+                session_btn_pause.setVisibility(View.VISIBLE);
+                session_btn_end.setVisibility(View.VISIBLE);
+                enableBottomBar(false);
+
+                session_chronometer.setBase(SystemClock.elapsedRealtime() - timer_base);
+                session_chronometer.start();
+                break;
+            case R.id.session_btn_pause:
+                session_btn_pause.setVisibility(View.INVISIBLE);
+                session_btn_start.setVisibility(View.VISIBLE);
+                session_btn_start.setText(R.string.session_lbl_resume);
+
+                timer_base = SystemClock.elapsedRealtime() - session_chronometer.getBase();
+                session_chronometer.stop();
+                break;
+            case R.id.session_btn_end:
+                session_btn_start.setVisibility(View.VISIBLE);
+                session_btn_end.setVisibility(View.INVISIBLE);
+                session_btn_pause.setVisibility(View.INVISIBLE);
+                session_btn_start.setText(R.string.session_lbl_start);
+                enableBottomBar(true);
+
+                session_chronometer.setBase(SystemClock.elapsedRealtime());
+                session_chronometer.stop();
+                timer_base = 0;
+
+                break;
+            default:
+        }
+    }
+
+    private void enableBottomBar(boolean enable) {
+        for (int i = 0; i < bottomNavigation.getMenu().size(); i++) {
+            bottomNavigation.getMenu().getItem(i).setEnabled(enable);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

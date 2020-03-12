@@ -55,9 +55,19 @@
         android:text="@string/session_lbl_time"
         android:textColor="@android:color/black"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/session_chronometer"
+        app:layout_constraintStart_toStartOf="@+id/session_main_rectangle"
         app:layout_constraintTop_toBottomOf="@+id/menu_divider" />
+
+    <Chronometer
+        android:id="@+id/session_chronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/session_lbl_time"
+        app:layout_constraintEnd_toEndOf="@+id/session_main_rectangle"
+        app:layout_constraintStart_toEndOf="@+id/session_lbl_time" />
 
 
     <androidx.cardview.widget.CardView
@@ -72,8 +82,8 @@
         app:layout_constraintTop_toBottomOf="@+id/session_lbl_time">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_height="match_parent"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/session_lbl_bpm"
@@ -110,11 +120,13 @@
 
             <ProgressBar
                 android:id="@+id/sensor_loading"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="75dp"
-                android:layout_height="73dp"
-                android:layout_marginBottom="50dp"
-                android:indeterminateTint="@color/black"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="75dp"
+                android:progress="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -132,8 +144,23 @@
         android:layout_marginEnd="32dp"
         android:background="@color/colorPrimary"
         android:elevation="10sp"
-        android:onClick="onButtonClick"
         android:text="@string/session_lbl_pause"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/session_main_rectangle" />
+
+    <Button
+        android:id="@+id/session_btn_start"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="32dp"
+        android:background="@color/colorPrimary"
+        android:elevation="10sp"
+        android:text="@string/session_lbl_start"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -149,7 +176,6 @@
         android:layout_marginEnd="32dp"
         android:background="@color/colorPrimary"
         android:elevation="10sp"
-        android:onClick="onButtonClick"
         android:text="@string/session_lbl_end"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
