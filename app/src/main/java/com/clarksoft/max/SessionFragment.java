@@ -56,6 +56,11 @@ public class SessionFragment extends Fragment {
     private long timer_base = 0;
     private boolean running = false;
 
+    long cmr_offset;
+    long in_hr = 0;
+    long above_hr = 0;
+    long below_hr = 0;
+
     private Button session_btn_start, session_btn_pause, session_btn_end;
     private int session = 0;
     private BottomNavigationView bottomNavigation;
@@ -210,6 +215,27 @@ public class SessionFragment extends Fragment {
         IntentFilter filter = new IntentFilter("sensor_broadcast");
         getActivity().registerReceiver(receiverUpdateDownload, filter);
 
+
+        session_chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+
+                if (cmr_offset >= 0) {
+                    if (bpm < 70) {
+                        below_hr += 1;
+                    }
+                    if (bpm >= 70 && bpm < 80) {
+                        in_hr += 1;
+                    }
+                    if (bpm >= 80) {
+                        above_hr += 1;
+                    }
+                    long total_time = below_hr + in_hr + above_hr;
+                } else
+                    cmr_offset += 1;
+            }
+        });
+
         return view;
     }
 
@@ -225,6 +251,8 @@ public class SessionFragment extends Fragment {
                 session_btn_pause.setVisibility(View.VISIBLE);
                 session_btn_end.setVisibility(View.VISIBLE);
                 enableBottomBar(false);
+
+                cmr_offset = -2;
 
                 session_chronometer.setBase(SystemClock.elapsedRealtime() - timer_base);
                 session_chronometer.start();
@@ -247,6 +275,8 @@ public class SessionFragment extends Fragment {
                 session_chronometer.setBase(SystemClock.elapsedRealtime());
                 session_chronometer.stop();
                 timer_base = 0;
+
+                // store the data
 
                 break;
             default:
