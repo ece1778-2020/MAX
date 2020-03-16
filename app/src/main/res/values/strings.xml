@@ -78,6 +78,8 @@ personalized cues regarding how hard they need to exercise for.  </string>
     <string name="settings1_toast_failedToSave">Failed to save the data. Check you internet connection.</string>
     <string name="settings1_toast_invalidInput">Invalid Input</string>
     <string name="settings2_toast_saved">Features settings saved.</string>
+    <string name="session_lbl_fetchingData">Fetching user settings.</string>
+    <string name="log_lbl">Log</string>
 
     <string-array name="settings2_time_array">
         <item>12:00 am</item>

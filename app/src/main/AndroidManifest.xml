@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +18,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-
+        <service
+            android:name=".NotifyService"
+            android:enabled="true"
+            android:exported="true"></service>
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait">
@@ -26,7 +31,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".SignupActivity"
             android:screenOrientation="portrait">
@@ -34,11 +38,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.clarksoft.max.LoginActivity" />
         </activity>
-
         <activity
             android:name=".NavigationActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".WahooService"

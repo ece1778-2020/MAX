@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -20,10 +21,30 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -36,7 +57,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  * Use the {@link SessionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SessionFragment extends Fragment {
+public class SessionFragment extends Fragment implements OnCompleteListener<QuerySnapshot>, OnSuccessListener<DocumentReference>, OnFailureListener {
 
     private int sensorPaired = 0;
     private int pairingProgress;
@@ -56,14 +77,21 @@ public class SessionFragment extends Fragment {
     private long timer_base = 0;
     private boolean running = false;
 
-    long cmr_offset;
-    long in_hr = 0;
-    long above_hr = 0;
-    long below_hr = 0;
+    private long cmr_offset;
+    private long in_hr = 0;
+    private long above_hr = 0;
+    private long below_hr = 0;
+
+    private Integer min_hr = 0, max_hr = 0;
 
     private Button session_btn_start, session_btn_pause, session_btn_end;
     private int session = 0;
     private BottomNavigationView bottomNavigation;
+
+    private String userUUID, db_key=null;
+    private int date;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -101,7 +129,7 @@ public class SessionFragment extends Fragment {
             bpm_str = getString(R.string.session_str_waiting);
             textMotivation.setVisibility(View.INVISIBLE);
             sensorLoading.setVisibility(View.VISIBLE);
-            card.setCardBackgroundColor(Color.parseColor("#FF8BC34A")); // green
+            card.setCardBackgroundColor(Color.parseColor("#FF999999")); // green
         } else {
             bpm_str = str;
         }
@@ -113,15 +141,20 @@ public class SessionFragment extends Fragment {
 
 
         if (bpm > -1) {
-            if (bpm < 70) {
+
+            if (min_hr == 0 && max_hr == 0){
+                card.setCardBackgroundColor(Color.parseColor("#FF999999")); // grey
+                motivation_str = getString((R.string.session_lbl_fetchingData));
+            }
+            else if (bpm < min_hr) {
                 card.setCardBackgroundColor(Color.parseColor("#FFF1D346")); //yellow
                 motivation_str = getString(R.string.session_str_seed_up);
             }
-            if (bpm >= 70 && bpm < 80) {
+            else if (bpm >= min_hr && bpm < max_hr) {
                 card.setCardBackgroundColor(Color.parseColor("#FF8BC34A")); // green
                 motivation_str = getString(R.string.session_str_keep_up);
             }
-            if (bpm >= 80) {
+            else if (bpm >= max_hr) {
                 card.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary)); //red
                 motivation_str = getString(R.string.session_str_slow_down);
             }
@@ -131,6 +164,9 @@ public class SessionFragment extends Fragment {
             textMotivation.setText(motivation_str);
 
             textBpm.setText(bpm_str);
+        }
+        else{
+            card.setCardBackgroundColor(Color.parseColor("#FF999999")); // grey
         }
     }
 
@@ -155,6 +191,9 @@ public class SessionFragment extends Fragment {
             sensorPaired = getArguments().getInt("sensorPaired");
             pairingProgress = getArguments().getInt("pairingProgress");
         }
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -165,6 +204,12 @@ public class SessionFragment extends Fragment {
         // Inflate the layout for this fragment
         parentView = view;
         view.setBackgroundColor(Color.WHITE);
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            userUUID = user.getUid();
+        }
+        fetchSettings1Data();
 
         textBpm = view.findViewById(R.id.session_lbl_bpm);
         textMotivation = view.findViewById(R.id.session_lbl_motivation);
@@ -221,15 +266,16 @@ public class SessionFragment extends Fragment {
             public void onChronometerTick(Chronometer chronometer) {
 
                 if (cmr_offset >= 0) {
-                    if (bpm < 70) {
+                    if (bpm < min_hr) {
                         below_hr += 1;
                     }
-                    if (bpm >= 70 && bpm < 80) {
+                    else if (bpm >= min_hr && bpm < max_hr) {
                         in_hr += 1;
                     }
-                    if (bpm >= 80) {
+                    else if (bpm >= max_hr) {
                         above_hr += 1;
                     }
+
                     long total_time = below_hr + in_hr + above_hr;
                 } else
                     cmr_offset += 1;
@@ -251,11 +297,10 @@ public class SessionFragment extends Fragment {
                 session_btn_pause.setVisibility(View.VISIBLE);
                 session_btn_end.setVisibility(View.VISIBLE);
                 enableBottomBar(false);
-
                 cmr_offset = -2;
-
                 session_chronometer.setBase(SystemClock.elapsedRealtime() - timer_base);
                 session_chronometer.start();
+                date = Integer.parseInt(new SimpleDateFormat("yyyyMMdd", Locale.CANADA).format((new Date())));
                 break;
             case R.id.session_btn_pause:
                 session_btn_pause.setVisibility(View.INVISIBLE);
@@ -275,6 +320,8 @@ public class SessionFragment extends Fragment {
                 session_chronometer.setBase(SystemClock.elapsedRealtime());
                 session_chronometer.stop();
                 timer_base = 0;
+
+                manageSessionData();
 
                 // store the data
 
@@ -326,5 +373,98 @@ public class SessionFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onSessionFragmentInteraction(Uri uri);
+    }
+
+    private void manageSessionData() {
+
+        Query userDataQuery = db.collection("session").whereEqualTo("uid", userUUID).whereEqualTo("date", date);
+        userDataQuery.get().addOnCompleteListener(this);
+    }
+
+    @Override
+    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        if (task.isSuccessful()) {
+            QuerySnapshot session_data = task.getResult();
+            for (QueryDocumentSnapshot document : session_data) {
+                Integer db_below_hr = Integer.parseInt(document.get("below_hr").toString());
+                Integer db_in_hr = Integer.parseInt(document.get("in_hr").toString());
+                Integer db_above_hr = Integer.parseInt(document.get("above_hr").toString());
+
+                db_key = document.getId();
+                below_hr += db_below_hr;
+                in_hr += db_in_hr;
+                above_hr += db_above_hr;
+            }
+
+            storeSessionData();
+
+        } else {
+            Log.e("DB", "", task.getException());
+        }
+    }
+
+    private void storeSessionData() {
+
+        Map<String, Object> sessionData = new HashMap<>();
+        sessionData.put("below_hr", below_hr);
+        sessionData.put("in_hr", in_hr);
+        sessionData.put("above_hr", above_hr);
+        sessionData.put("uid", userUUID);
+        sessionData.put("date", date);
+
+        if(db_key == null) {
+
+            db.collection("session").add(sessionData)
+                    .addOnSuccessListener(this)
+                    .addOnFailureListener(this);
+        }
+        else{
+            db.collection("session").document(db_key).set(sessionData)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            db_key = null;
+                            below_hr = 0;
+                            in_hr = 0;
+                            above_hr = 0;
+                        }
+                    }).addOnFailureListener(this);
+        }
+    }
+
+    @Override
+    public void onSuccess(DocumentReference documentReference) {
+        db_key = null;
+        below_hr = 0;
+        in_hr = 0;
+        above_hr = 0;
+    }
+
+    @Override
+    public void onFailure(@NonNull Exception e) {
+        Toast.makeText(getContext(), R.string.settings1_toast_failedToSave, Toast.LENGTH_LONG).show();
+        Log.e("DB", e.toString());
+    }
+
+    private void fetchSettings1Data() {
+        DocumentReference userData = db.collection("settings1").document(userUUID);
+        userData.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if(document != null && document.exists()){
+                        max_hr = Integer.parseInt(document.get("max_hr").toString());
+                        min_hr = Integer.parseInt(document.get("min_hr").toString());
+                    }
+                    else {
+                        Log.e("DB", "Document does not exist.");
+                    }
+                }
+                else{
+                    Log.e("DB", "", task.getException());
+                }
+            }
+        });
     }
 }

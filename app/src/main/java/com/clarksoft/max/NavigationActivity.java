@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Calendar;
 import java.util.concurrent.Semaphore;
 
 public class NavigationActivity extends AppCompatActivity
@@ -53,7 +56,7 @@ public class NavigationActivity extends AppCompatActivity
                             openFragment(SessionFragment.newInstance(bpm, bpm_str, sensorPaired, pairingProgress));
                             return true;
                         case R.id.navigation_log:
-                            //openFragment(NotificationFragment.newInstance("", ""));
+                            openFragment(LogFragment.newInstance("", ""));
                             return true;
                     }
                     return false;
@@ -73,6 +76,19 @@ public class NavigationActivity extends AppCompatActivity
         service.addListener(this);
 
         startSensorDiscovery();
+
+        Intent myIntent = new Intent(getApplicationContext(), NotifyService.class);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, myIntent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE,59);
+        calendar.set(Calendar.HOUR, 7);
+        calendar.set(Calendar.AM_PM, Calendar.PM);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000*60*60*24 , pendingIntent);
     }
 
     private void startSensorDiscovery() {
@@ -136,10 +152,7 @@ public class NavigationActivity extends AppCompatActivity
         try {
             bpm_str = str.split(",")[1].split("/")[0];
             bpm = (int) Float.parseFloat(bpm_str);
-
-            Log.e("TestinG", bpm_str );
             bpm_str = bpm_str.split("\\.")[0];
-            Log.e("TestinG", bpm_str );
             bpm_str += " bpm";
             sensorPaired = 1;
         } catch (Exception e) {
