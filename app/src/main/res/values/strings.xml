@@ -80,6 +80,15 @@ personalized cues regarding how hard they need to exercise for.  </string>
     <string name="settings2_toast_saved">Features settings saved.</string>
     <string name="session_lbl_fetchingData">Fetching user settings.</string>
     <string name="log_lbl">Log</string>
+    <string name="end_session_lbl">End Session</string>
+    <string name="end_session_lbl_session_summary">Session Summary</string>
+    <string name="end_session_date_lbl">Date</string>
+    <string name="end_session_dash">--</string>
+    <string name="end_session_total_exercise_lbl">Total Exercise Time</string>
+    <string name="end_session_time_in_hr_lbl">Total Time Spent in\nTarget Heart Range</string>
+    <string name="end_session_max_hr_lbl">Maximum Heart Rate</string>
+    <string name="end_session_min_hr_lbl">Minimum Heart Rate</string>
+    <string name="end_session_btn">Save Session</string>
 
     <string-array name="settings2_time_array">
         <item>12:00 am</item>

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.SystemClock;
 import android.util.Log;
@@ -322,6 +323,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                 timer_base = 0;
 
                 manageSessionData();
+                openFragment(EndSessionFragment.newInstance("", ""));
 
                 // store the data
 
@@ -466,5 +468,12 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                 }
             }
         });
+    }
+
+    public void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_frame, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
