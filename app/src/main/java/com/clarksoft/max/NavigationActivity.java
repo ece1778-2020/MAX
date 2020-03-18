@@ -50,9 +50,11 @@ public class NavigationActivity extends AppCompatActivity
                             openFragment(SettingsFragment.newInstance("", ""));
                             return true;
                         case R.id.navigation_dashboard:
+                            //TODO: The dashboard and session fragments don't need these parameters anymore.
                             openFragment(DashboardFragment.newInstance(bpm, bpm_str, sensorPaired, pairingProgress));
                             return true;
                         case R.id.navigation_session:
+                            //TODO: The dashboard and session fragments don't need these parameters anymore.
                             openFragment(SessionFragment.newInstance(bpm, bpm_str, sensorPaired, pairingProgress));
                             return true;
                         case R.id.navigation_log:

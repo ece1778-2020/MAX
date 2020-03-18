@@ -79,11 +79,12 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
     private boolean running = false;
 
     private long cmr_offset;
-    private long in_hr = 0;
-    private long above_hr = 0;
-    private long below_hr = 0;
+    private int in_hr = 0;
+    private int above_hr = 0;
+    private int below_hr = 0;
 
     private Integer min_hr = 0, max_hr = 0;
+    private Integer current_min = Integer.MAX_VALUE, current_max = 0;
 
     private Button session_btn_start, session_btn_pause, session_btn_end;
     private int session = 0;
@@ -142,6 +143,9 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
 
 
         if (bpm > -1) {
+
+            current_max = Math.max(current_max, bpm);
+            current_min = Math.min(current_min, bpm);
 
             if (min_hr == 0 && max_hr == 0){
                 card.setCardBackgroundColor(Color.parseColor("#FF999999")); // grey
@@ -323,6 +327,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                 timer_base = 0;
 
                 manageSessionData();
+
                 openFragment(EndSessionFragment.newInstance("", ""));
 
                 // store the data
@@ -470,7 +475,18 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         });
     }
 
-    public void openFragment(Fragment fragment) {
+    private void openFragment(Fragment fragment) {
+
+        Float total_exercise = (in_hr + above_hr + below_hr) / 60.0f;
+        Float target_exercise = (in_hr) / 60.0f;
+
+        Bundle args = new Bundle();
+        args.putString("total_workout", String.format("%.2f min",total_exercise));
+        args.putString("target_workout", String.format("%.2f min",target_exercise));
+        args.putString("max", current_max.toString());
+        args.putString("min", current_min.toString());
+        fragment.setArguments(args);
+
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_frame, fragment);
         transaction.addToBackStack(null);
