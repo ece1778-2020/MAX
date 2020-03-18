@@ -24,8 +24,8 @@ public class NotifyService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle("MAX");
-        builder.setContentText("You are falling behind on your exercises. Catch up! Click here to start a session.");
-        builder.setSmallIcon(R.drawable.ic_notification);
+        builder.setContentText("You are falling behind on your exercises.");
+        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         Intent notifyIntent = new Intent(this, NavigationActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 2, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         //to be able to launch your activity from the notification
