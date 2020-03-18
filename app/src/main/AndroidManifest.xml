@@ -21,7 +21,13 @@
         <service
             android:name=".NotifyService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+        </service>
+        <receiver
+            android:name=".MyReceiver"
+            android:enabled="true"
+            android:exported="false" >
+        </receiver>
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait">
