@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Calendar;
 import java.util.concurrent.Semaphore;
 
 public class NavigationActivity extends AppCompatActivity
@@ -47,13 +51,15 @@ public class NavigationActivity extends AppCompatActivity
                             openFragment(SettingsFragment.newInstance("", ""));
                             return true;
                         case R.id.navigation_dashboard:
+                            //TODO: The dashboard and session fragments don't need these parameters anymore.
                             openFragment(DashboardFragment.newInstance(bpm, bpm_str, sensorPaired, pairingProgress));
                             return true;
                         case R.id.navigation_session:
+                            //TODO: The dashboard and session fragments don't need these parameters anymore.
                             openFragment(SessionFragment.newInstance(bpm, bpm_str, sensorPaired, pairingProgress));
                             return true;
                         case R.id.navigation_log:
-                            //openFragment(NotificationFragment.newInstance("", ""));
+                            openFragment(LogFragment.newInstance("", ""));
                             return true;
                     }
                     return false;
@@ -73,6 +79,21 @@ public class NavigationActivity extends AppCompatActivity
         service.addListener(this);
 
         startSensorDiscovery();
+
+        Intent alarmIntent = new Intent(this, MyReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 37);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.AM_PM, Calendar.PM);
+
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
     private void startSensorDiscovery() {
@@ -136,10 +157,7 @@ public class NavigationActivity extends AppCompatActivity
         try {
             bpm_str = str.split(",")[1].split("/")[0];
             bpm = (int) Float.parseFloat(bpm_str);
-
-            Log.e("TestinG", bpm_str );
             bpm_str = bpm_str.split("\\.")[0];
-            Log.e("TestinG", bpm_str );
             bpm_str += " bpm";
             sensorPaired = 1;
         } catch (Exception e) {

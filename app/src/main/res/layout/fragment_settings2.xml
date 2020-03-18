@@ -204,7 +204,7 @@
                 app:layout_constraintStart_toEndOf="@+id/settings2_lbl_vibration" />
 
             <Button
-                android:id="@+id/settings1_btn_save"
+                android:id="@+id/settings2_btn_save"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
