@@ -1,5 +1,6 @@
 package com.clarksoft.max;
 
+import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +18,16 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.MyViewHold
     private ArrayList<Uri> BadgeUri;
     private ArrayList<String> BadgeTitle;
     private ArrayList<String> BadgeDescription;
+    private ArrayList<Boolean> BadgeEnabled;
+    private Context context;
 
-    public BadgesAdapter(ArrayList<Uri> BadgeUri, ArrayList<String> BadgeTitle, ArrayList<String> BadgeDescription) {
+    public BadgesAdapter(ArrayList<Uri> BadgeUri, ArrayList<String> BadgeTitle, ArrayList<String> BadgeDescription, ArrayList<Boolean> BadgeEnabled, Context context) {
 
         this.BadgeUri = BadgeUri;
         this.BadgeTitle = BadgeTitle;
         this.BadgeDescription = BadgeDescription;
+        this.BadgeEnabled = BadgeEnabled;
+        this.context = context;
     }
 
     @NonNull
@@ -39,6 +44,11 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.MyViewHold
         holder.BadgeImageView.setImageURI(BadgeUri.get(position));
         holder.BadgeTitleView.setText(BadgeTitle.get(position));
         holder.BadgeDescriptionView.setText(BadgeDescription.get(position));
+
+        if(BadgeEnabled.get(position)){
+            holder.BadgeTitleView.setTextColor(context.getColor(R.color.colorPrimary));
+            holder.BadgeDescriptionView.setTextColor(context.getColor(R.color.black));
+        }
     }
 
     @Override

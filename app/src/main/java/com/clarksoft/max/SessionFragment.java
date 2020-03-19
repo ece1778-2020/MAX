@@ -547,7 +547,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         badgeData.put("olympic", olympic);
         badgeData.put("christmas", christmas);
 
-        db.collection("session").document(userUUID).set(badgeData)
+        db.collection("badges").document(userUUID).set(badgeData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
