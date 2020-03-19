@@ -50,28 +50,28 @@ public class BadgesFragment extends Fragment {
     };
     private ArrayList<String> badgeTitle = new ArrayList<String>() {
         {
-            add("Newbee: welcome to the hive");
-            add("Exercise star");
-            add("Rising star");
+            add("Newbee: Welcome To The Hive");
+            add("Exercise Star");
+            add("Rising Star");
             add("Exercise Medal");
-            add("Move that body");
-            add("Exercise cup");
-            add("I live for the applause");
+            add("Move That Body");
+            add("Exercise Cup");
+            add("I Live For The Applause");
             add("Olympic");
             add("Christmas");
         }
     };
     private ArrayList<String> badgeDescription = new ArrayList<String>() {
         {
-            add("Completed your fist session");
-            add("Exercised 3 days in a week");
-            add("Exercised every day in a week");
-            add("Exercised for 30 min in one session");
-            add("Spent less than 10% of the exercise time in the low HR range");
-            add("Exercised for 60 min in the target HR range range in one week");
-            add("Did a whole session in the target HR range (longer than 5 min)");
-            add("Did a whole week in the target HR range (sessions longer than 5 min)");
-            add("Exercise on the 25th of December");
+            add("Completed your first session.");
+            add("Exercised 3 days in a week.");
+            add("Exercised every day in a week.");
+            add("Exercised for 30min in one session.");
+            add("Spent less than 10% of the exercise time in the low HR range.");
+            add("Exercised for 60 min in the target HR range range in one week.");
+            add("Did a whole session in the target HR range (longer than 5 min).");
+            add("Did a whole week in the target HR range (sessions longer than 5 min).");
+            add("Exercise on the 25th of December.");
         }
     };
 

@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/badge_view"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="8dp"
