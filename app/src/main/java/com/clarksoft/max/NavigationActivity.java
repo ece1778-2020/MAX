@@ -27,6 +27,7 @@ public class NavigationActivity extends AppCompatActivity
         SettingsFragment.OnFragmentInteractionListener,
         Settings1Fragment.OnFragmentInteractionListener,
         Settings2Fragment.OnFragmentInteractionListener,
+        ExerciseSummaryFragment.OnFragmentInteractionListener,
         WahooServiceListener {
 
     private final String LOG_TAG = NavigationActivity.class.getName();
@@ -59,7 +60,7 @@ public class NavigationActivity extends AppCompatActivity
                             openFragment(SessionFragment.newInstance(bpm, bpm_str, sensorPaired, pairingProgress));
                             return true;
                         case R.id.navigation_log:
-                            openFragment(LogFragment.newInstance("", ""));
+                            openFragment(ExerciseSummaryFragment.newInstance("", ""));
                             return true;
                     }
                     return false;
@@ -88,7 +89,7 @@ public class NavigationActivity extends AppCompatActivity
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 9);
-        calendar.set(Calendar.MINUTE, 37);
+        calendar.set(Calendar.MINUTE, 42);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.AM_PM, Calendar.PM);
 
@@ -212,5 +213,10 @@ public class NavigationActivity extends AppCompatActivity
         intent.putExtra("sensorPaired", sensorPaired);
         intent.putExtra("pairingProgress", pairingProgress);
         sendBroadcast(intent);
+    }
+
+    @Override
+    public void onExerciseSummaryFragmentInteraction(Uri uri) {
+
     }
 }
