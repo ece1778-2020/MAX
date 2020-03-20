@@ -3,6 +3,7 @@ package com.clarksoft.max;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,12 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -72,6 +75,8 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
+    private Button log_btn_share;
+
     public LogFragment() {
         // Required empty public constructor
     }
@@ -117,6 +122,8 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
             userUUID = user.getUid();
         }
 
+        log_btn_share = view.findViewById(R.id.log_btn_share);
+
         chart = view.findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
 
@@ -159,6 +166,13 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         // chart.setDrawLegend(false);
 
         fetchSessionData();
+
+        log_btn_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                share();
+            }
+        });
 
         return view;
     }
@@ -357,5 +371,20 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
                 }
             }
         });
+    }
+
+    private void share(){
+        Bitmap chart_bmp = chart.getChartBitmap();
+
+        String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(),
+                chart_bmp, "Design", null);
+
+        Uri uri = Uri.parse(path);
+
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/*");
+        share.putExtra(Intent.EXTRA_STREAM, uri);
+        share.putExtra(Intent.EXTRA_TEXT, "I found something cool!");
+        getContext().startActivity(Intent.createChooser(share, "Share Your Design!"));
     }
 }
