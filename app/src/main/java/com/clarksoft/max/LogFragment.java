@@ -377,14 +377,14 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         Bitmap chart_bmp = chart.getChartBitmap();
 
         String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(),
-                chart_bmp, "Design", null);
+                chart_bmp, "Exercise Log", null);
 
         Uri uri = Uri.parse(path);
 
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/*");
         share.putExtra(Intent.EXTRA_STREAM, uri);
-        share.putExtra(Intent.EXTRA_TEXT, "I found something cool!");
-        getContext().startActivity(Intent.createChooser(share, "Share Your Design!"));
+        share.putExtra(Intent.EXTRA_TEXT, "Look at the progress I am making with the Max App!");
+        getContext().startActivity(Intent.createChooser(share, "Share your progress"));
     }
 }
