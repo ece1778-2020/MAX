@@ -142,13 +142,13 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         chart.getAxisRight().setEnabled(false);
 
         XAxis xLabels = chart.getXAxis();
-        xLabels.setPosition(XAxis.XAxisPosition.TOP);
+        xLabels.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         // chart.setDrawXLabels(false);
         // chart.setDrawYLabels(false);
 
         Legend l = chart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
@@ -335,11 +335,12 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     QuerySnapshot session_data = task.getResult();
-                    int i = 0;
+                    int i = 1;
                     for (QueryDocumentSnapshot document : session_data) {
                         float db_below_hr = Integer.parseInt(document.get("below_hr").toString()) / 60.0f;
                         float db_in_hr = Integer.parseInt(document.get("in_hr").toString()) / 60.0f;
                         float db_above_hr = Integer.parseInt(document.get("above_hr").toString()) / 60.0f;
+//                        float date = Integer.parseInt(document.get("date").toString());
 
                         values.add(new BarEntry(
                                 i,
