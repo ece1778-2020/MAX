@@ -1,3 +1,6 @@
+# OS X specific
+.DS_Store
+
 # Google Firebase config file
 google-services.json
 
