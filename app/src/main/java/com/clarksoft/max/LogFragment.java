@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -84,7 +85,12 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
 
     private Button log_btn_share;
 
-    private Map<String, Integer> m = new HashMap<>();
+    private Map<String, String> month_number = new HashMap<>();
+
+    TextView log_date_view;
+    String max_date, min_date;
+
+    ImageView log_calendar_icon;
 
     public LogFragment() {
         // Required empty public constructor
@@ -119,15 +125,18 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        badge_key.put("newbee", 0);
-        badge_key.put("exercise_star", 1);
-        badge_key.put("rising_star", 2);
-        badge_key.put("exercise_medal", 3);
-        badge_key.put("move_that_body", 4);
-        badge_key.put("exercise_cup", 5);
-        badge_key.put("i_live_for_the_applause", 6);
-        badge_key.put("olympic", 7);
-        badge_key.put("christmas", 8);
+        month_number.put("Jan", "01");
+        month_number.put("Feb", "02");
+        month_number.put("Mar", "03");
+        month_number.put("Apr", "04");
+        month_number.put("May", "05");
+        month_number.put("Jun", "06");
+        month_number.put("Jul", "07");
+        month_number.put("Aug", "08");
+        month_number.put("Sep", "09");
+        month_number.put("Oct", "10");
+        month_number.put("Nov", "11");
+        month_number.put("Dec", "12");
     }
 
     @Override
@@ -142,6 +151,8 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         }
 
         log_btn_share = view.findViewById(R.id.log_btn_share);
+        log_date_view = view.findViewById(R.id.log_date_view);
+        log_calendar_icon = view.findViewById(R.id.log_calendar_icon);
 
         chart = view.findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
@@ -184,13 +195,24 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
 
         // chart.setDrawLegend(false);
 
-        fetchSessionData();
+        fetchSessionData(Integer.MIN_VALUE, Integer.MAX_VALUE);
 
         log_btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-//                share();
+            public void onClick(View view) {
+                share();
+            }
+        });
+
+        log_date_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                date_picker();
+            }
+        });
+        log_calendar_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 date_picker();
             }
         });
@@ -328,7 +350,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         return temp;
     }
 
-    public void set_data(ArrayList<BarEntry> values){
+    public void set_data(ArrayList<BarEntry> values) {
 
         BarDataSet set1;
 
@@ -358,13 +380,15 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         chart.invalidate();
     }
 
-    private void fetchSessionData() {
+    private void fetchSessionData(Integer start_date, Integer end_date) {
 
         ArrayList<BarEntry> values = new ArrayList<>();
 
         Query userDataQuery = db.collection("session")
                 .whereEqualTo("uid", userUUID)
-                .orderBy("date");
+                .orderBy("date")
+                .startAt(start_date)
+                .endAt(end_date);
         userDataQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -375,17 +399,28 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
                         float db_below_hr = Integer.parseInt(document.get("below_hr").toString()) / 60.0f;
                         float db_in_hr = Integer.parseInt(document.get("in_hr").toString()) / 60.0f;
                         float db_above_hr = Integer.parseInt(document.get("above_hr").toString()) / 60.0f;
-//                        float date = Integer.parseInt(document.get("date").toString());
+                        String date = document.get("date").toString();
 
                         values.add(new BarEntry(
                                 i,
                                 new float[]{db_below_hr, db_in_hr, db_above_hr},
                                 getResources().getDrawable(R.drawable.star)));
 
+                        if (i == 1)
+                            min_date = date;
+                        max_date = date;
+
                         i++;
                     }
 
                     set_data(values);
+                    min_date = min_date.substring(0, 4) + "/" + min_date.substring(4, 6) + "/" + min_date.substring(6, 8);
+                    max_date = max_date.substring(0, 4) + "/" + max_date.substring(4, 6) + "/" + max_date.substring(6, 8);
+
+                    if (start_date == Integer.MIN_VALUE) {
+                        log_date_view.setText(min_date + " - " + max_date);
+                    }
+
 
                 } else {
                     Log.e("DB", "", task.getException());
@@ -394,7 +429,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         });
     }
 
-    private void share(){
+    private void share() {
         Bitmap chart_bmp = chart.getChartBitmap();
 
         String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(),
@@ -409,34 +444,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         getContext().startActivity(Intent.createChooser(share, "Share your progress"));
     }
 
-    private void date_picker(){
-//        MaterialDatePicker.Builder builder = MaterialDatePicker.Builder.dateRangePicker();
-//        MaterialDatePicker picker = builder.build();
-//
-//        picker.show(getActivity().getSupportFragmentManager(), picker.toString());
-//
-//        picker.addOnCancelListener(new DialogInterface.OnCancelListener() {
-//            @Override
-//            public void onCancel(DialogInterface dialogInterface) {
-//                Log.d("DatePicker Activity", "Dialog was cancelled");
-//            }
-//        });
-//
-//        picker.addOnNegativeButtonClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d("DatePicker Activity", "Dialog Negative Button was clicked");
-//            }
-//        });
-//
-//
-//        picker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
-//            @Override
-//            public void onPositiveButtonClick(Object selection) {
-//                Log.d("date: ", selection.toString());
-//            }
-//        });
-
+    private void date_picker() {
 
         MaterialDatePicker.Builder<Pair<Long, Long>> builder =
                 MaterialDatePicker.Builder.dateRangePicker();
@@ -447,33 +455,36 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
 
         picker.addOnPositiveButtonClickListener(
                 selection -> {
-                    Log.d("Date: ", picker.getHeaderText());
+                    String calendar_out = picker.getHeaderText();
+                    String present_year = (new SimpleDateFormat("yyyy", Locale.CANADA).format((new Date())));
+                    String end_date_str = extract_date(calendar_out.split("–")[1].trim(), present_year);
+                    String start_date_str = extract_date(calendar_out.split("–")[0].trim(), end_date_str.substring(0, 4));
 
-                    String year;
+                    int start_date = Integer.parseInt(start_date_str);
+                    int end_date = Integer.parseInt(end_date_str);
 
-                    String dates = picker.getHeaderText().split(",")[0].trim();
-                    try {
-                        year = picker.getHeaderText().split(",")[1].trim();
-                    }
-                    catch (Exception e){
-                        year = "2020";
-                    }
+                    fetchSessionData(start_date, end_date);
 
-                    String start = dates.split("–")[0].trim();
-                    String end = dates.split("–")[1].trim();
-
-                    String start_month = start.split(" ")[0].trim();
-                    String end_month = end.split(" ")[0].trim();
-
-                    String start_day = start.split(" ")[1].trim();
-                    String end_day = end.split(" ")[1].trim();
-
-
-                    Log.d("Date: ", start + " | " + end + " | " + year + " | ");
-
-
+                    start_date_str = start_date_str.substring(0, 4) + "/" + start_date_str.substring(4, 6) + "/" + start_date_str.substring(6, 8);
+                    end_date_str = end_date_str.substring(0, 4) + "/" + end_date_str.substring(4, 6) + "/" + end_date_str.substring(6, 8);
+                    log_date_view.setText(start_date_str + " - " + end_date_str);
                 });
+    }
 
+    private String extract_date(String date, String cur_year) {
 
+        String year;
+        try {
+            year = date.split(",")[1].trim();
+            date = date.split(",")[0].trim();
+        } catch (Exception e) {
+            year = cur_year;
+        }
+
+        String month = month_number.get(date.split(" ")[0].trim());
+        String day = (date.split(" ")[1].trim().length() == 2) ? date.split(" ")[1].trim() : "0" + date.split(" ")[1].trim();
+        String date_out = year + month + day;
+
+        return date_out;
     }
 }
