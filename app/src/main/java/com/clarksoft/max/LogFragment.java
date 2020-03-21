@@ -1,6 +1,7 @@
 package com.clarksoft.max;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
@@ -39,6 +41,9 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -50,8 +55,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -76,6 +83,8 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
     private FirebaseFirestore db;
 
     private Button log_btn_share;
+
+    private Map<String, Integer> m = new HashMap<>();
 
     public LogFragment() {
         // Required empty public constructor
@@ -109,6 +118,16 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        badge_key.put("newbee", 0);
+        badge_key.put("exercise_star", 1);
+        badge_key.put("rising_star", 2);
+        badge_key.put("exercise_medal", 3);
+        badge_key.put("move_that_body", 4);
+        badge_key.put("exercise_cup", 5);
+        badge_key.put("i_live_for_the_applause", 6);
+        badge_key.put("olympic", 7);
+        badge_key.put("christmas", 8);
     }
 
     @Override
@@ -169,8 +188,10 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
 
         log_btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                share();
+            public void onClick(View view)
+            {
+//                share();
+                date_picker();
             }
         });
 
@@ -386,5 +407,73 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         share.putExtra(Intent.EXTRA_STREAM, uri);
         share.putExtra(Intent.EXTRA_TEXT, "Look at the progress I am making with the Max App!");
         getContext().startActivity(Intent.createChooser(share, "Share your progress"));
+    }
+
+    private void date_picker(){
+//        MaterialDatePicker.Builder builder = MaterialDatePicker.Builder.dateRangePicker();
+//        MaterialDatePicker picker = builder.build();
+//
+//        picker.show(getActivity().getSupportFragmentManager(), picker.toString());
+//
+//        picker.addOnCancelListener(new DialogInterface.OnCancelListener() {
+//            @Override
+//            public void onCancel(DialogInterface dialogInterface) {
+//                Log.d("DatePicker Activity", "Dialog was cancelled");
+//            }
+//        });
+//
+//        picker.addOnNegativeButtonClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("DatePicker Activity", "Dialog Negative Button was clicked");
+//            }
+//        });
+//
+//
+//        picker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
+//            @Override
+//            public void onPositiveButtonClick(Object selection) {
+//                Log.d("date: ", selection.toString());
+//            }
+//        });
+
+
+        MaterialDatePicker.Builder<Pair<Long, Long>> builder =
+                MaterialDatePicker.Builder.dateRangePicker();
+        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+        builder.setCalendarConstraints(constraintsBuilder.build());
+        MaterialDatePicker<?> picker = builder.build();
+        picker.show(getActivity().getSupportFragmentManager(), picker.toString());
+
+        picker.addOnPositiveButtonClickListener(
+                selection -> {
+                    Log.d("Date: ", picker.getHeaderText());
+
+                    String year;
+
+                    String dates = picker.getHeaderText().split(",")[0].trim();
+                    try {
+                        year = picker.getHeaderText().split(",")[1].trim();
+                    }
+                    catch (Exception e){
+                        year = "2020";
+                    }
+
+                    String start = dates.split("–")[0].trim();
+                    String end = dates.split("–")[1].trim();
+
+                    String start_month = start.split(" ")[0].trim();
+                    String end_month = end.split(" ")[0].trim();
+
+                    String start_day = start.split(" ")[1].trim();
+                    String end_day = end.split(" ")[1].trim();
+
+
+                    Log.d("Date: ", start + " | " + end + " | " + year + " | ");
+
+
+                });
+
+
     }
 }
