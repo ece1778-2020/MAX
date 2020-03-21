@@ -91,8 +91,8 @@ public class EndSessionFragment extends Fragment {
         date.setText(date_str);
         total_exercise.setText(total_workout);
         target_exercise.setText(target_workout);
-        max_hr.setText(max);
-        min_hr.setText(min);
+        max_hr.setText(max + " bpm");
+        min_hr.setText(min + " bpm");
 
 
         btn_back.setOnClickListener(new View.OnClickListener() {

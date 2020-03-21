@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -46,6 +48,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -90,10 +93,28 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
     private int session = 0;
     private BottomNavigationView bottomNavigation;
 
-    private String userUUID, db_key=null;
+    private String userUUID, db_key = null;
     private int date;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+
+    private MediaPlayer mp_slow;
+    private MediaPlayer mp_fast;
+    private Boolean sessionRunning = false;
+    private ReentrantLock audio_mutex = new ReentrantLock();
+
+    private Boolean newbee = false;
+    private Boolean exercise_star = false;
+    private Boolean rising_star = false;
+    private Boolean exercise_medal = false;
+    private Boolean move_that_body = false;
+    private Boolean exercise_cup = false;
+    private Boolean i_live_for_the_applause = false;
+    private Boolean olympic = false;
+    private Boolean christmas = false;
+
+    enum mediaPlayers {slow, fast};
+    private Boolean sound_enabled = false;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -147,21 +168,30 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
             current_max = Math.max(current_max, bpm);
             current_min = Math.min(current_min, bpm);
 
-            if (min_hr == 0 && max_hr == 0){
+            if (min_hr == 0 && max_hr == 0) {
                 card.setCardBackgroundColor(Color.parseColor("#FF999999")); // grey
                 motivation_str = getString((R.string.session_lbl_fetchingData));
-            }
-            else if (bpm < min_hr) {
+
+                stopMedia(mediaPlayers.slow);
+                stopMedia(mediaPlayers.fast);
+            } else if (bpm < min_hr) {
                 card.setCardBackgroundColor(Color.parseColor("#FFF1D346")); //yellow
                 motivation_str = getString(R.string.session_str_seed_up);
-            }
-            else if (bpm >= min_hr && bpm < max_hr) {
+
+                stopMedia(mediaPlayers.fast);
+                startMedia(mediaPlayers.slow);
+            } else if (bpm >= min_hr && bpm < max_hr) {
                 card.setCardBackgroundColor(Color.parseColor("#FF8BC34A")); // green
                 motivation_str = getString(R.string.session_str_keep_up);
-            }
-            else if (bpm >= max_hr) {
+
+                stopMedia(mediaPlayers.slow);
+                stopMedia(mediaPlayers.fast);
+            } else if (bpm >= max_hr) {
                 card.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary)); //red
                 motivation_str = getString(R.string.session_str_slow_down);
+
+                stopMedia(mediaPlayers.slow);
+                startMedia(mediaPlayers.fast);
             }
 
             textMotivation.setVisibility(View.VISIBLE);
@@ -169,8 +199,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
             textMotivation.setText(motivation_str);
 
             textBpm.setText(bpm_str);
-        }
-        else{
+        } else {
             card.setCardBackgroundColor(Color.parseColor("#FF999999")); // grey
         }
     }
@@ -199,6 +228,11 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        mp_slow = MediaPlayer.create(getContext(), R.raw.slow);
+        mp_slow.setLooping(true);
+        mp_fast = MediaPlayer.create(getContext(), R.raw.fast);
+        mp_fast.setLooping(true);
     }
 
     @Override
@@ -215,6 +249,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
             userUUID = user.getUid();
         }
         fetchSettings1Data();
+        fetchSettings2Data();
 
         textBpm = view.findViewById(R.id.session_lbl_bpm);
         textMotivation = view.findViewById(R.id.session_lbl_motivation);
@@ -273,11 +308,9 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                 if (cmr_offset >= 0) {
                     if (bpm < min_hr) {
                         below_hr += 1;
-                    }
-                    else if (bpm >= min_hr && bpm < max_hr) {
+                    } else if (bpm >= min_hr && bpm < max_hr) {
                         in_hr += 1;
-                    }
-                    else if (bpm >= max_hr) {
+                    } else if (bpm >= max_hr) {
                         above_hr += 1;
                     }
 
@@ -306,20 +339,33 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                 session_chronometer.setBase(SystemClock.elapsedRealtime() - timer_base);
                 session_chronometer.start();
                 date = Integer.parseInt(new SimpleDateFormat("yyyyMMdd", Locale.CANADA).format((new Date())));
+                sessionRunning = true;
                 break;
             case R.id.session_btn_pause:
                 session_btn_pause.setVisibility(View.INVISIBLE);
                 session_btn_start.setVisibility(View.VISIBLE);
                 session_btn_start.setText(R.string.session_lbl_resume);
 
+                stopMedia(mediaPlayers.slow);
+                stopMedia(mediaPlayers.fast);
+
+
                 timer_base = SystemClock.elapsedRealtime() - session_chronometer.getBase();
                 session_chronometer.stop();
+                sessionRunning = false;
                 break;
             case R.id.session_btn_end:
                 session_btn_start.setVisibility(View.VISIBLE);
                 session_btn_end.setVisibility(View.INVISIBLE);
                 session_btn_pause.setVisibility(View.INVISIBLE);
                 session_btn_start.setText(R.string.session_lbl_start);
+
+                stopMedia(mediaPlayers.slow, false);
+                stopMedia(mediaPlayers.fast, false);
+
+                // Should only be called after stopping the media players
+                sessionRunning = false;
+
                 enableBottomBar(true);
 
                 session_chronometer.setBase(SystemClock.elapsedRealtime());
@@ -327,6 +373,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                 timer_base = 0;
 
                 manageSessionData();
+                set_badges();
 
                 openFragment(EndSessionFragment.newInstance("", ""));
 
@@ -419,13 +466,12 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         sessionData.put("uid", userUUID);
         sessionData.put("date", date);
 
-        if(db_key == null) {
+        if (db_key == null) {
 
             db.collection("session").add(sessionData)
                     .addOnSuccessListener(this)
                     .addOnFailureListener(this);
-        }
-        else{
+        } else {
             db.collection("session").document(db_key).set(sessionData)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -458,17 +504,34 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         userData.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    if(document != null && document.exists()){
+                    if (document != null && document.exists()) {
                         max_hr = Integer.parseInt(document.get("max_hr").toString());
                         min_hr = Integer.parseInt(document.get("min_hr").toString());
-                    }
-                    else {
+                    } else {
                         Log.e("DB", "Document does not exist.");
                     }
+                } else {
+                    Log.e("DB", "", task.getException());
                 }
-                else{
+            }
+        });
+    }
+
+    private void fetchSettings2Data() {
+        DocumentReference userData = db.collection("settings2").document(userUUID);
+        userData.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        sound_enabled = document.getBoolean("sound");
+                    } else {
+                        Log.e("DB", "Document does not exist.");
+                    }
+                } else {
                     Log.e("DB", "", task.getException());
                 }
             }
@@ -481,8 +544,8 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         Float target_exercise = (in_hr) / 60.0f;
 
         Bundle args = new Bundle();
-        args.putString("total_workout", String.format("%.2f min",total_exercise));
-        args.putString("target_workout", String.format("%.2f min",target_exercise));
+        args.putString("total_workout", String.format("%.2f min", total_exercise));
+        args.putString("target_workout", String.format("%.2f min", target_exercise));
         args.putString("max", current_max.toString());
         args.putString("min", current_min.toString());
         fragment.setArguments(args);
@@ -491,5 +554,126 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         transaction.replace(R.id.main_frame, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private void set_badges() {
+        get_badge();
+        badge_newbee();
+        update_badge();
+    }
+
+    private void badge_newbee() {
+        if (!newbee)
+            newbee = true;
+    }
+
+    private void get_badge() {
+        DocumentReference BadgeData = db.collection("badges")
+                .document(userUUID);
+        BadgeData.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        newbee = document.getBoolean("newbee");
+                        exercise_star = document.getBoolean("exercise_star");
+                        rising_star = document.getBoolean("rising_star");
+                        exercise_medal = document.getBoolean("exercise_medal");
+                        move_that_body = document.getBoolean("move_that_body");
+                        exercise_cup = document.getBoolean("exercise_cup");
+                        i_live_for_the_applause = document.getBoolean("i_live_for_the_applause");
+                        olympic = document.getBoolean("olympic");
+                        christmas = document.getBoolean("christmas");
+                    } else {
+                        Log.e("DB", "Document does not exist.");
+                        update_badge();
+                    }
+                } else {
+                    Log.e("DB", "", task.getException());
+                }
+            }
+        });
+    }
+
+    private void update_badge() {
+        Map<String, Object> badgeData = new HashMap<>();
+        badgeData.put("newbee", newbee);
+        badgeData.put("exercise_star", exercise_star);
+        badgeData.put("rising_star", rising_star);
+        badgeData.put("exercise_medal", exercise_medal);
+        badgeData.put("move_that_body", move_that_body);
+        badgeData.put("exercise_cup", exercise_cup);
+        badgeData.put("i_live_for_the_applause", i_live_for_the_applause);
+        badgeData.put("olympic", olympic);
+        badgeData.put("christmas", christmas);
+
+        db.collection("badges").document(userUUID).set(badgeData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Badges Updated.");
+                    }
+                }).addOnFailureListener(this);
+    }
+
+    private void stopMedia(mediaPlayers mp) {
+        stopMedia(mp, true);
+    }
+
+    private void stopMedia(mediaPlayers mp, Boolean recreate) {
+        try {
+            audio_mutex.lock();
+            switch (mp) {
+                case slow:
+
+                    if (sound_enabled && sessionRunning && mp_slow.isPlaying()) {
+                        mp_slow.stop();
+                        mp_slow.release();
+
+                        if (recreate) {
+                            mp_slow = MediaPlayer.create(getContext(), R.raw.slow);
+                            mp_slow.setLooping(true);
+                        }
+                    }
+
+                    break;
+                case fast:
+                    if (sound_enabled && sessionRunning && mp_fast.isPlaying()) {
+                        mp_fast.stop();
+                        mp_fast.release();
+
+                        if (recreate) {
+                            mp_fast = MediaPlayer.create(getContext(), R.raw.fast);
+                            mp_fast.setLooping(true);
+                        }
+                    }
+
+                    break;
+            }
+        } finally {
+            audio_mutex.unlock();
+        }
+    }
+
+    private void startMedia(mediaPlayers mp) {
+        try {
+            audio_mutex.lock();
+            switch (mp) {
+                case slow:
+                    if (sound_enabled && sessionRunning && !mp_slow.isPlaying()) {
+                        mp_slow.start();
+                    }
+
+                    break;
+                case fast:
+                    if (sound_enabled && sessionRunning && !mp_fast.isPlaying()) {
+                        mp_fast.start();
+                    }
+                    break;
+            }
+        } finally {
+            audio_mutex.unlock();
+        }
     }
 }
