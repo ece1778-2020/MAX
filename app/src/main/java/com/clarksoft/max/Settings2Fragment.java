@@ -65,7 +65,7 @@ public class Settings2Fragment extends Fragment implements OnSuccessListener<Voi
     private FirebaseFirestore db;
 
     private Button settings2_btn_save;
-    private Switch settings2_reminder, settings2_vibration;
+    private Switch settings2_reminder, settings2_sound;
     private Spinner settings2_time_selector;
     private RadioGroup settings2_week_button_group;
 
@@ -121,7 +121,7 @@ public class Settings2Fragment extends Fragment implements OnSuccessListener<Voi
 
         settings2_btn_save = view.findViewById(R.id.settings2_btn_save);
         settings2_reminder = view.findViewById(R.id.settings2_reminder);
-        settings2_vibration = view.findViewById(R.id.settings2_vibration);
+        settings2_sound = view.findViewById(R.id.settings2_sound);
         settings2_week_button_group = view.findViewById(R.id.settings2_week_button_group);
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -175,7 +175,7 @@ public class Settings2Fragment extends Fragment implements OnSuccessListener<Voi
 
             int selected_day = 0, selected_time;
             boolean reminder = settings2_reminder.isChecked();
-            boolean vibration = settings2_vibration.isChecked();
+            boolean sound = settings2_sound.isChecked();
             switch (settings2_week_button_group.getCheckedRadioButtonId()) {
                 case R.id.settings2_radio_mon:
                     selected_day = 1;
@@ -211,7 +211,7 @@ public class Settings2Fragment extends Fragment implements OnSuccessListener<Voi
 
             Map<String, Object> userData = new HashMap<>();
             userData.put("reminder", reminder);
-            userData.put("vibration", vibration);
+            userData.put("sound", sound);
             userData.put("selected_day", selected_day);
             userData.put("selected_time", selected_time);
 
@@ -255,12 +255,12 @@ public class Settings2Fragment extends Fragment implements OnSuccessListener<Voi
             DocumentSnapshot document = task.getResult();
             if (document != null && document.exists()) {
                 boolean reminder = document.getBoolean("reminder");
-                boolean vibration = document.getBoolean("vibration");
+                boolean sound = document.getBoolean("sound");
                 Integer selected_day = Integer.parseInt(document.get("selected_day").toString());
                 Integer selected_time = Integer.parseInt(document.get("selected_time").toString());
 
                 settings2_reminder.setChecked(reminder);
-                settings2_vibration.setChecked(vibration);
+                settings2_sound.setChecked(sound);
                 settings2_time_selector.setSelection(selected_time);
 
 //            RadioButton radio = getView().findViewById(R.id.R.id.settings2_radio_mon);

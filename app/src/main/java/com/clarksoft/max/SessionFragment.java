@@ -114,6 +114,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
     private Boolean christmas = false;
 
     enum mediaPlayers {slow, fast};
+    private Boolean sound_enabled = false;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -248,6 +249,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
             userUUID = user.getUid();
         }
         fetchSettings1Data();
+        fetchSettings2Data();
 
         textBpm = view.findViewById(R.id.session_lbl_bpm);
         textMotivation = view.findViewById(R.id.session_lbl_motivation);
@@ -517,6 +519,25 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         });
     }
 
+    private void fetchSettings2Data() {
+        DocumentReference userData = db.collection("settings2").document(userUUID);
+        userData.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        sound_enabled = document.getBoolean("sound");
+                    } else {
+                        Log.e("DB", "Document does not exist.");
+                    }
+                } else {
+                    Log.e("DB", "", task.getException());
+                }
+            }
+        });
+    }
+
     private void openFragment(Fragment fragment) {
 
         Float total_exercise = (in_hr + above_hr + below_hr) / 60.0f;
@@ -606,7 +627,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
             switch (mp) {
                 case slow:
 
-                    if (sessionRunning && mp_slow.isPlaying()) {
+                    if (sound_enabled && sessionRunning && mp_slow.isPlaying()) {
                         mp_slow.stop();
                         mp_slow.release();
 
@@ -618,7 +639,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
 
                     break;
                 case fast:
-                    if (sessionRunning && mp_fast.isPlaying()) {
+                    if (sound_enabled && sessionRunning && mp_fast.isPlaying()) {
                         mp_fast.stop();
                         mp_fast.release();
 
@@ -640,13 +661,13 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
             audio_mutex.lock();
             switch (mp) {
                 case slow:
-                    if (sessionRunning && !mp_slow.isPlaying()) {
+                    if (sound_enabled && sessionRunning && !mp_slow.isPlaying()) {
                         mp_slow.start();
                     }
 
                     break;
                 case fast:
-                    if (sessionRunning && !mp_fast.isPlaying()) {
+                    if (sound_enabled && sessionRunning && !mp_fast.isPlaying()) {
                         mp_fast.start();
                     }
                     break;

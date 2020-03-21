@@ -73,7 +73,7 @@ personalized cues regarding how hard they need to exercise for.  </string>
     <string name="session_lbl_start">START SESSION</string>
     <string name="session_lbl_resume">Resume Session</string>
     <string name="session_lbl_still_awaiting">Still awaiting sensor. Try again later.</string>
-    <string name="settings2_lbl_vibration_alert">Vibration alert</string>
+    <string name="settings2_lbl_sound_alert">Sound alert</string>
     <string name="settings1_toast_saved">User settings saved.</string>
     <string name="settings1_toast_failedToSave">Failed to save the data. Check you internet connection.</string>
     <string name="settings1_toast_invalidInput">Invalid Input</string>

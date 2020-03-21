@@ -160,12 +160,11 @@
                 android:id="@+id/settings2_reminder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Switch"
                 android:trackTint="@color/colorPrimaryLight"
                 app:layout_constraintBaseline_toBaselineOf="@+id/settings2_lbl_reminder"
-                app:layout_constraintEnd_toEndOf="@+id/settings2_vibration"
+                app:layout_constraintEnd_toEndOf="@+id/settings2_sound"
                 app:layout_constraintStart_toEndOf="@+id/settings2_lbl_reminder"
-                app:layout_constraintStart_toStartOf="@+id/settings2_vibration" />
+                app:layout_constraintStart_toStartOf="@+id/settings2_sound" />
 
             <View
                 android:id="@+id/settings2_solid_bar"
@@ -186,18 +185,17 @@
                 android:layout_marginStart="70dp"
                 android:layout_marginTop="30dp"
                 android:gravity="left"
-                android:text="@string/settings2_lbl_vibration_alert"
+                android:text="@string/settings2_lbl_sound_alert"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/settings2_solid_bar" />
 
             <Switch
-                android:id="@+id/settings2_vibration"
+                android:id="@+id/settings2_sound"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:text="Switch"
                 android:trackTint="@color/colorPrimaryLight"
                 app:layout_constraintBaseline_toBaselineOf="@+id/settings2_lbl_vibration"
                 app:layout_constraintEnd_toEndOf="parent"
