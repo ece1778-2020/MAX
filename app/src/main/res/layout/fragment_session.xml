@@ -70,6 +70,16 @@
         app:layout_constraintStart_toEndOf="@+id/session_lbl_time" />
 
 
+    <ImageView
+        android:id="@+id/session_notification_active"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/ic_notifications_active"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toEndOf="@+id/session_main_rectangle"
+        app:layout_constraintTop_toTopOf="@+id/session_main_rectangle"
+        android:visibility="invisible"/>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/session_main_rectangle"
         android:layout_width="268dp"
