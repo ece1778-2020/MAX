@@ -185,19 +185,22 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                 stopMedia(mediaPlayers.slow);
                 stopMedia(mediaPlayers.fast);
             } else if (bpm < min_hr) {
-                card.setCardBackgroundColor(Color.parseColor("#FFF1D346")); //yellow
+                int base_color = Color.parseColor("#00F1D346");
+                card.setCardBackgroundColor(cardColourManager(bpm, min_hr, max_hr, base_color)); //yellow
                 motivation_str = getString(R.string.session_str_seed_up);
 
                 stopMedia(mediaPlayers.fast);
                 startMedia(mediaPlayers.slow);
             } else if (bpm >= min_hr && bpm < max_hr) {
-                card.setCardBackgroundColor(Color.parseColor("#FF8BC34A")); // green
+                int base_color = Color.parseColor("#008BC34A");
+                card.setCardBackgroundColor(cardColourManager(bpm, min_hr, max_hr, base_color)); // green
                 motivation_str = getString(R.string.session_str_keep_up);
 
                 stopMedia(mediaPlayers.slow);
                 stopMedia(mediaPlayers.fast);
             } else if (bpm >= max_hr) {
-                card.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary)); //red
+                int base_color = Color.parseColor("#00EE5819");
+                card.setCardBackgroundColor(cardColourManager(bpm, min_hr, max_hr, base_color)); //red
                 motivation_str = getString(R.string.session_str_slow_down);
 
                 stopMedia(mediaPlayers.slow);
@@ -814,6 +817,49 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                 }
             });
         }
+
+    }
+
+    private Integer cardColourManager(Integer bpm, Integer min, Integer max, Integer base_colour){
+
+//        |------------|---------|-----------|-------------|
+//       min-10       min      center       max          max+10
+//
+//                if (between min-10 and min)
+//                    (255/10) * (min - bpm) + 25;
+//                    if (> 255) 255;
+//                if (between max and max + 10)
+//                    (255/10) * (bpm - max) + 25;
+//                    if (> 255) 255;
+//                if(between min and center)
+//                    (255/(center-min)) * (bpm - min) + 25;
+//                    if (> 255) 255;
+//                if(between center and max)
+//                    (255/(max-center)) * (max - bpm) + 25;
+//                    if (> 255) 255;
+
+        final Integer range_offset = 10;
+        final Integer center = (min + max)/2;
+        Integer alpha_constant = 255;
+
+        if (bpm < min) {
+            alpha_constant = ((255 / range_offset) * (min - bpm)) + 25;
+            alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
+        }
+        else if (bpm >= min && bpm <= center) {
+            alpha_constant = ((255/(center - min)) * (bpm - min)) + 25;
+            alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
+        }
+        else if (bpm > center && bpm <= max) {
+            alpha_constant = ((255/(max-center)) * (max - bpm)) + 25;
+            alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
+        }
+        else if (bpm > max) {
+            alpha_constant = ((255/range_offset) * (bpm - max)) + 25;
+            alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
+        }
+
+        return base_colour + (alpha_constant << 24);
 
     }
 }
