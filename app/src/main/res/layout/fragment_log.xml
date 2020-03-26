@@ -10,7 +10,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,9 +23,9 @@
                 android:id="@+id/log_main_rectangle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 app:cardBackgroundColor="@color/colorPrimary"
-                app:cardCornerRadius="25dp"
+                app:cardCornerRadius="5dp"
                 android:layout_marginStart="50dp"
                 android:layout_marginEnd="50dp"
                 app:layout_constraintEnd_toEndOf="parent"
