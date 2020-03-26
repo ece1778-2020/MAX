@@ -13,7 +13,7 @@ class InputValidation {
             "(?=\\S+$)" +           //no white spaces
             ".{8,}" +               //at least 8 characters
             "$");
-    static final Pattern USERNAME_PATTERN = Pattern.compile("([a-zA-Z].*?){3}");
+    static final Pattern AGE_PATTERN = Pattern.compile("^(0?[1-9]|[1-9][0-9])$");
 
 
     Boolean matchPattern(String input, Pattern pattern){

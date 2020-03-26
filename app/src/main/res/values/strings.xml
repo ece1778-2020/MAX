@@ -94,6 +94,9 @@ personalized cues regarding how hard they need to exercise for.  </string>
     <string name="menu_summary">Summary</string>
     <string name="log_lbl_share">Share</string>
     <string name="settings_lbl_log_out"><![CDATA[< Log Out]]></string>
+    <string name="signup_lbl_age">Age</string>
+    <string name="signup_age_hint">Numeric</string>
+    <string name="signup_error">Please enter valid age.</string>
 
     <string-array name="settings2_time_array">
         <item>12:00 am</item>

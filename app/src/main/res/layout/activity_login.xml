@@ -54,6 +54,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
+            app:hintTextAppearance="@style/AppTheme.TextFloatLabelAppearance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_max_caption">
@@ -61,11 +62,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
                 android:backgroundTint="@color/colorPrimary"
-                android:drawableTint="#00000000"
                 android:ems="10"
-                android:foregroundTint="#FFFFFF"
                 android:hint="@string/login_lbl_email"
                 android:importantForAutofill="no"
                 android:inputType="text"
@@ -95,7 +93,7 @@
                 android:inputType="textPassword"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                tools:targetApi="o" />
+                tools:targetApi="o"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

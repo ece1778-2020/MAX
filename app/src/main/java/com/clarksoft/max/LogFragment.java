@@ -88,7 +88,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
     private Map<String, String> month_number = new HashMap<>();
 
     TextView log_date_view;
-    String max_date, min_date;
+    String max_date = "", min_date = "";
 
     ImageView log_calendar_icon;
 
@@ -413,9 +413,13 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
                         i++;
                     }
 
-                    set_data(values);
-                    min_date = min_date.substring(0, 4) + "/" + min_date.substring(4, 6) + "/" + min_date.substring(6, 8);
-                    max_date = max_date.substring(0, 4) + "/" + max_date.substring(4, 6) + "/" + max_date.substring(6, 8);
+                    if(values.size() > 0) {
+                        set_data(values);
+                    }
+                    if(!min_date.isEmpty()) {
+                        min_date = min_date.substring(0, 4) + "/" + min_date.substring(4, 6) + "/" + min_date.substring(6, 8);
+                        max_date = max_date.substring(0, 4) + "/" + max_date.substring(4, 6) + "/" + max_date.substring(6, 8);
+                    }
 
                     if (start_date == Integer.MIN_VALUE) {
                         log_date_view.setText(min_date + " - " + max_date);

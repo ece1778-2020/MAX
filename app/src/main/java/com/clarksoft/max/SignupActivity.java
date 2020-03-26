@@ -42,7 +42,7 @@ public class SignupActivity
     private TextInputLayout email;
     private TextInputLayout password;
     private TextInputLayout passwordConf;
-    private TextInputLayout username;
+    private TextInputLayout age;
     private ProgressBar progressBar;
     private String userUUID;
 
@@ -65,7 +65,7 @@ public class SignupActivity
         email = findViewById(R.id.input_reg_email);
         password = findViewById(R.id.input_reg_password);
         passwordConf = findViewById(R.id.input_reg_conf_password);
-        username = findViewById(R.id.input_user_name);
+        age = findViewById(R.id.input_user_age);
         progressBar = findViewById(R.id.progressBar_cyclic);
 
         mAuth = FirebaseAuth.getInstance();
@@ -85,8 +85,8 @@ public class SignupActivity
                 case R.id.input_reg_conf_password_txt:
                     setHintForTextInputLayout(passwordConf, getString(R.string.signup_input_reg_conf_password_hint_pattern));
                     break;
-                case R.id.input_user_name_txt:
-                    setHintForTextInputLayout(username, getString(R.string.signup_input_user_name_hint_pattern));
+                case R.id.input_user_age_txt:
+                    setHintForTextInputLayout(age, getString(R.string.signup_age_hint));
                     break;
                 default:
                     // Nothing special to do with received View
@@ -122,9 +122,9 @@ public class SignupActivity
                     }
                     break;
 
-                case R.id.input_user_name_txt:
-                    setHintForTextInputLayout(username, "");
-                    validate(username, InputValidation.USERNAME_PATTERN, getString(R.string.signup_err_input_username));
+                case R.id.input_user_age_txt:
+                    setHintForTextInputLayout(age, "");
+                    validate(age, InputValidation.AGE_PATTERN, getString(R.string.signup_error));
                     break;
                 default:
                     // Nothing special to do with received View
@@ -215,7 +215,7 @@ public class SignupActivity
         safeSetFocusListener(email, this);
         safeSetFocusListener(password, this);
         safeSetFocusListener(passwordConf, this);
-        safeSetFocusListener(username, this);
+        safeSetFocusListener(age, this);
     }
 
     public void signupClick(View view) {
@@ -232,7 +232,7 @@ public class SignupActivity
 
             Boolean valid = validate(email, Patterns.EMAIL_ADDRESS, getString(R.string.signup_err_input_email), true);
             valid &= validate(password, InputValidation.PWD_PATTERN, getString(R.string.signup_err_input_pwd), true);
-            valid &= validate(username, InputValidation.USERNAME_PATTERN, getString(R.string.signup_err_input_username), true);
+            valid &= validate(age, InputValidation.AGE_PATTERN, getString(R.string.signup_err_input_username), true);
             valid &= inputValidation.comparePwd(passwordInput, passwordConfInput);
             inputValidation.updateFieldError(valid, passwordConf, getString(R.string.signup_err_input_pwd_mismatch));
 
@@ -244,16 +244,22 @@ public class SignupActivity
     }
 
     private void storeUserData() {
-        EditText usernameInputTxt = username.getEditText();
+        EditText ageInputTxt = age.getEditText();
 
-        if (usernameInputTxt != null) {
-            String usernameInput = usernameInputTxt.getText().toString();
+        if (ageInputTxt != null) {
+            Integer ageInput = Integer.parseInt(ageInputTxt.getText().toString());
+
+            Integer max_hr = (int) Math.round((206.9 - (0.67 * ageInput)) * 0.75);
+            Integer min_hr = (int) Math.round((206.9 - (0.67 * ageInput)) * 0.65);
 
             Map<String, Object> userData = new HashMap<>();
-            userData.put("username", usernameInput);
+            userData.put("age", ageInput);
+            userData.put("max_hr", max_hr);
+            userData.put("min_hr", min_hr);
+            userData.put("target_time", 10);
 
             // Add a new document with a generated ID to Firebase
-            db.collection("users").document(userUUID).set(userData)
+            db.collection("settings1").document(userUUID).set(userData)
                     .addOnSuccessListener(this).addOnFailureListener(this);
         }
     }
