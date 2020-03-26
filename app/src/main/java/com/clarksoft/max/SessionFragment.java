@@ -841,21 +841,22 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         final Integer range_offset = 10;
         final Integer center = (min + max)/2;
         Integer alpha_constant = 255;
+        Integer min_alpha_clip = 100;
 
         if (bpm < min) {
-            alpha_constant = ((255 / range_offset) * (min - bpm)) + 25;
+            alpha_constant = ((255 / range_offset) * (min - bpm)) + min_alpha_clip;
             alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
         }
         else if (bpm >= min && bpm <= center) {
-            alpha_constant = ((255/(center - min)) * (bpm - min)) + 25;
+            alpha_constant = ((255/(center - min)) * (bpm - min)) + min_alpha_clip;
             alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
         }
         else if (bpm > center && bpm <= max) {
-            alpha_constant = ((255/(max-center)) * (max - bpm)) + 25;
+            alpha_constant = ((255/(max-center)) * (max - bpm)) + min_alpha_clip;
             alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
         }
         else if (bpm > max) {
-            alpha_constant = ((255/range_offset) * (bpm - max)) + 25;
+            alpha_constant = ((255/range_offset) * (bpm - max)) + min_alpha_clip;
             alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
         }
 
