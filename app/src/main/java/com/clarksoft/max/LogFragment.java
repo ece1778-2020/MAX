@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
@@ -85,6 +86,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
     private FirebaseFirestore db;
 
     private Button log_btn_share;
+    CardView log_main_rectangle;
 
     private Map<String, String> month_number = new HashMap<>();
 
@@ -158,6 +160,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         log_btn_share = view.findViewById(R.id.log_btn_share);
         log_date_view = view.findViewById(R.id.log_date_view);
         log_calendar_icon = view.findViewById(R.id.log_calendar_icon);
+        log_main_rectangle = view.findViewById(R.id.log_main_rectangle);
 
         chart = view.findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
@@ -187,6 +190,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         xLabels.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         // chart.setDrawXLabels(false);
+        xLabels.setDrawLabels(false);
         // chart.setDrawYLabels(false);
 
         Legend l = chart.getLegend();
@@ -216,6 +220,12 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
             }
         });
         log_calendar_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                date_picker();
+            }
+        });
+        log_main_rectangle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 date_picker();
@@ -413,6 +423,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
             chart.setData(data);
         }
 
+        chart.animateY(1500);
         chart.setFitBars(true);
         chart.invalidate();
     }
