@@ -344,15 +344,14 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
     }
 
     private void openFragment(Fragment fragment,
-                              Float in_hr,
+                              Float target_exercise,
                               Float above_hr,
                               Float below_hr,
                               Integer current_max,
                               Integer current_min,
                               String date) {
 
-        Float total_exercise = (in_hr + above_hr + below_hr) / 60.0f;
-        Float target_exercise = (in_hr) / 60.0f;
+        Float total_exercise = (target_exercise + above_hr + below_hr);
 
         Bundle args = new Bundle();
         args.putString("total_workout", String.format("%.2f min", total_exercise));
