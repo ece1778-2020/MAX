@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -91,6 +92,10 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
     String max_date = "", min_date = "";
 
     ImageView log_calendar_icon;
+
+    ArrayList<String> date_list = new ArrayList<>();
+    ArrayList<Integer> min_hr_list = new ArrayList<>();
+    ArrayList<Integer> max_hr_list = new ArrayList<>();
 
     public LogFragment() {
         // Required empty public constructor
@@ -325,10 +330,43 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
 
         BarEntry entry = (BarEntry) e;
 
-        if (entry.getYVals() != null)
-            Log.i("VAL SELECTED", "Value: " + entry.getYVals()[h.getStackIndex()]);
-        else
-            Log.i("VAL SELECTED", "Value: " + entry.getY());
+        if (entry.getYVals() != null) {
+            int x_val = (int) entry.getX() - 1;
+            float above_hr = entry.getYVals()[2];
+            float in_hr = entry.getYVals()[1];
+            float below_hr = entry.getYVals()[0];
+            String date = date_list.get(x_val);
+            date = date.substring(0, 4) + "/" + date.substring(4, 6) + "/" + date.substring(6, 8);
+            Integer min = min_hr_list.get(x_val);
+            Integer max = max_hr_list.get(x_val);
+            openFragment(EndSessionFragment.newInstance("", ""), in_hr, above_hr, below_hr, max, min, date);
+        }
+    }
+
+    private void openFragment(Fragment fragment,
+                              Float in_hr,
+                              Float above_hr,
+                              Float below_hr,
+                              Integer current_max,
+                              Integer current_min,
+                              String date) {
+
+        Float total_exercise = (in_hr + above_hr + below_hr) / 60.0f;
+        Float target_exercise = (in_hr) / 60.0f;
+
+        Bundle args = new Bundle();
+        args.putString("total_workout", String.format("%.2f min", total_exercise));
+        args.putString("target_workout", String.format("%.2f min", target_exercise));
+        args.putString("max", current_max.toString());
+        args.putString("min", current_min.toString());
+        args.putString("date", date);
+        args.putString("initiator", "log");
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_frame, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
@@ -393,6 +431,11 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    date_list.clear();
+                    min_hr_list.clear();
+                    ;
+                    max_hr_list.clear();
+                    ;
                     QuerySnapshot session_data = task.getResult();
                     int i = 1;
                     for (QueryDocumentSnapshot document : session_data) {
@@ -400,7 +443,12 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
                         float db_in_hr = Integer.parseInt(document.get("in_hr").toString()) / 60.0f;
                         float db_above_hr = Integer.parseInt(document.get("above_hr").toString()) / 60.0f;
                         String date = document.get("date").toString();
+                        Integer min_hr = Integer.parseInt(document.get("min").toString());
+                        Integer max_hr = Integer.parseInt(document.get("max").toString());
 
+                        date_list.add(date);
+                        min_hr_list.add(min_hr);
+                        max_hr_list.add(max_hr);
                         values.add(new BarEntry(
                                 i,
                                 new float[]{db_below_hr, db_in_hr, db_above_hr},
@@ -413,10 +461,10 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
                         i++;
                     }
 
-                    if(values.size() > 0) {
+                    if (values.size() > 0) {
                         set_data(values);
                     }
-                    if(!min_date.isEmpty()) {
+                    if (!min_date.isEmpty()) {
                         min_date = min_date.substring(0, 4) + "/" + min_date.substring(4, 6) + "/" + min_date.substring(6, 8);
                         max_date = max_date.substring(0, 4) + "/" + max_date.substring(4, 6) + "/" + max_date.substring(6, 8);
                     }

@@ -485,6 +485,8 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         sessionData.put("above_hr", above_hr);
         sessionData.put("uid", userUUID);
         sessionData.put("date", date);
+        sessionData.put("min", current_min);
+        sessionData.put("max", current_max);
 
         if (db_key == null) {
 
@@ -500,6 +502,8 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                             below_hr = 0;
                             in_hr = 0;
                             above_hr = 0;
+                            current_min = Integer.MAX_VALUE;
+                            current_max = 0;
                         }
                     }).addOnFailureListener(this);
         }
@@ -563,12 +567,15 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
 
         Float total_exercise = (in_hr + above_hr + below_hr) / 60.0f;
         Float target_exercise = (in_hr) / 60.0f;
+        String date_str = new SimpleDateFormat("dd/MMM/yyyy", Locale.CANADA).format((new Date()));
 
         Bundle args = new Bundle();
         args.putString("total_workout", String.format("%.2f min", total_exercise));
         args.putString("target_workout", String.format("%.2f min", target_exercise));
         args.putString("max", current_max.toString());
         args.putString("min", current_min.toString());
+        args.putString("date", date_str);
+        args.putString("initiator", "session");
         fragment.setArguments(args);
 
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -821,22 +828,6 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
     }
 
     private Integer cardColourManager(Integer bpm, Integer min, Integer max, Integer base_colour){
-
-//        |------------|---------|-----------|-------------|
-//       min-10       min      center       max          max+10
-//
-//                if (between min-10 and min)
-//                    (255/10) * (min - bpm) + 25;
-//                    if (> 255) 255;
-//                if (between max and max + 10)
-//                    (255/10) * (bpm - max) + 25;
-//                    if (> 255) 255;
-//                if(between min and center)
-//                    (255/(center-min)) * (bpm - min) + 25;
-//                    if (> 255) 255;
-//                if(between center and max)
-//                    (255/(max-center)) * (max - bpm) + 25;
-//                    if (> 255) 255;
 
         final Integer range_offset = 10;
         final Integer center = (min + max)/2;
