@@ -208,7 +208,7 @@ public class Settings1Fragment extends Fragment implements OnSuccessListener<Voi
             Integer min_hr = Integer.parseInt(settings1_input_min_hr.getText().toString().trim());
             Integer target_time = Integer.parseInt(settings1_input_time.getText().toString().trim());
 
-            if((max_hr <= min_hr) || (max_hr > 120) || (min_hr < 60)) {
+            if((max_hr <= min_hr) || (max_hr > 150) || (min_hr < 60)) {
                 Toast.makeText(getContext(), "Invalid minimum or maximum HR range! Fix and try again.", Toast.LENGTH_LONG).show();
                 return;
             }

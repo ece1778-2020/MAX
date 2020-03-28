@@ -235,101 +235,6 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         return view;
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.bar, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        switch (item.getItemId()) {
-//            case R.id.viewGithub: {
-//                Intent i = new Intent(Intent.ACTION_VIEW);
-//                i.setData(Uri.parse("https://github.com/PhilJay/MPAndroidChart/blob/master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/StackedBarActivity.java"));
-//                startActivity(i);
-//                break;
-//            }
-//            case R.id.actionToggleValues: {
-//                List<IBarDataSet> sets = chart.getData()
-//                        .getDataSets();
-//
-//                for (IBarDataSet iSet : sets) {
-//
-//                    BarDataSet set = (BarDataSet) iSet;
-//                    set.setDrawValues(!set.isDrawValuesEnabled());
-//                }
-//
-//                chart.invalidate();
-//                break;
-//            }
-//            case R.id.actionToggleIcons: {
-//                List<IBarDataSet> sets = chart.getData()
-//                        .getDataSets();
-//
-//                for (IBarDataSet iSet : sets) {
-//
-//                    BarDataSet set = (BarDataSet) iSet;
-//                    set.setDrawIcons(!set.isDrawIconsEnabled());
-//                }
-//
-//                chart.invalidate();
-//                break;
-//            }
-//            case R.id.actionToggleHighlight: {
-//                if (chart.getData() != null) {
-//                    chart.getData().setHighlightEnabled(!chart.getData().isHighlightEnabled());
-//                    chart.invalidate();
-//                }
-//                break;
-//            }
-//            case R.id.actionTogglePinch: {
-//                if (chart.isPinchZoomEnabled())
-//                    chart.setPinchZoom(false);
-//                else
-//                    chart.setPinchZoom(true);
-//
-//                chart.invalidate();
-//                break;
-//            }
-//            case R.id.actionToggleAutoScaleMinMax: {
-//                chart.setAutoScaleMinMaxEnabled(!chart.isAutoScaleMinMaxEnabled());
-//                chart.notifyDataSetChanged();
-//                break;
-//            }
-//            case R.id.actionToggleBarBorders: {
-//                for (IBarDataSet set : chart.getData().getDataSets())
-//                    ((BarDataSet) set).setBarBorderWidth(set.getBarBorderWidth() == 1.f ? 0.f : 1.f);
-//
-//                chart.invalidate();
-//                break;
-//            }
-//            case R.id.animateX: {
-//                chart.animateX(2000);
-//                break;
-//            }
-//            case R.id.animateY: {
-//                chart.animateY(2000);
-//                break;
-//            }
-//            case R.id.animateXY: {
-//
-//                chart.animateXY(2000, 2000);
-//                break;
-//            }
-//            case R.id.actionSave: {
-//                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-//                    saveToGallery();
-//                } else {
-//                    requestStoragePermission(chart);
-//                }
-//                break;
-//            }
-//        }
-//        return true;
-//    }
-
     @Override
     protected void saveToGallery() {
         saveToGallery(chart, "StackedBarActivity");
@@ -474,6 +379,10 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
                     if (values.size() > 0) {
                         set_data(values);
                     }
+                    else {
+                        values.clear();
+                        set_data(values);
+                    }
                     if (!min_date.isEmpty()) {
                         min_date = min_date.substring(0, 4) + "/" + min_date.substring(4, 6) + "/" + min_date.substring(6, 8);
                         max_date = max_date.substring(0, 4) + "/" + max_date.substring(4, 6) + "/" + max_date.substring(6, 8);
@@ -502,7 +411,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/*");
         share.putExtra(Intent.EXTRA_STREAM, uri);
-        share.putExtra(Intent.EXTRA_TEXT, "Look at the progress I am making with the Max App!");
+        share.putExtra(Intent.EXTRA_TEXT, "Look at the progress I made with the Max App from " + min_date + " to " + max_date + "!");
         getContext().startActivity(Intent.createChooser(share, "Share your progress"));
     }
 

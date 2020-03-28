@@ -2,6 +2,7 @@ package com.clarksoft.max;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,11 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.MyViewHold
         if(BadgeEnabled.get(position)){
             holder.BadgeTitleView.setTextColor(context.getColor(R.color.colorPrimary));
             holder.BadgeDescriptionView.setTextColor(context.getColor(R.color.black));
+        }
+        else
+        {
+            holder.BadgeTitleView.setTextColor(context.getColor(R.color.colorPrimaryLight));
+            holder.BadgeDescriptionView.setTextColor(context.getColor(R.color.faded_gray));
         }
     }
 
