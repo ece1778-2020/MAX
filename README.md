@@ -1,2 +1,2 @@
 # MAX
-Android application for helping stoke patients engage in aerobic exercises
+Android application for helping stroke patients engage in aerobic exercises
