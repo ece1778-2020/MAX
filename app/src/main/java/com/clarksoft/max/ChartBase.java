@@ -21,7 +21,7 @@ import com.github.mikephil.charting.charts.Chart;
  *
  * @author Philipp Jahoda
  */
-public abstract class DemoBase extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
+public abstract class ChartBase extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     protected final String[] months = new String[] {
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"

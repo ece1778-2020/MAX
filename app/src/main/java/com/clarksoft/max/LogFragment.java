@@ -1,9 +1,6 @@
 package com.clarksoft.max;
 
-import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -11,7 +8,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -19,14 +15,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -37,6 +29,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.StackedValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
@@ -46,7 +39,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -56,10 +48,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -69,7 +59,7 @@ import java.util.Map;
  * Use the {@link LogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LogFragment extends DemoBase implements OnChartValueSelectedListener {
+public class LogFragment extends ChartBase implements OnChartValueSelectedListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -96,6 +86,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
     ImageView log_calendar_icon;
 
     ArrayList<String> date_list = new ArrayList<>();
+    ArrayList<String> x_axis_date_list = new ArrayList<>();
     ArrayList<Integer> min_hr_list = new ArrayList<>();
     ArrayList<Integer> max_hr_list = new ArrayList<>();
 
@@ -182,7 +173,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
 
         // change the position of the y-labels
         YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setValueFormatter(new MyValueFormatter(" min"));
+        leftAxis.setValueFormatter(new YaxisFormatter(" min"));
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
         chart.getAxisRight().setEnabled(false);
 
@@ -190,7 +181,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         xLabels.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         // chart.setDrawXLabels(false);
-        xLabels.setDrawLabels(false);
+//        xLabels.setDrawLabels(false);
         // chart.setDrawYLabels(false);
 
         Legend l = chart.getLegend();
@@ -251,7 +242,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
             float in_hr = entry.getYVals()[1];
             float below_hr = entry.getYVals()[0];
             String date = date_list.get(x_val);
-            date = date.substring(0, 4) + "/" + date.substring(4, 6) + "/" + date.substring(6, 8);
+//            date = date.substring(0, 4) + "/" + date.substring(4, 6) + "/" + date.substring(6, 8);
             Integer min = min_hr_list.get(x_val);
             Integer max = max_hr_list.get(x_val);
             openFragment(EndSessionFragment.newInstance("", ""), in_hr, above_hr, below_hr, max, min, date);
@@ -326,6 +317,10 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
             data.setValueTextColor(Color.WHITE);
 
             chart.setData(data);
+
+            // Set the value formatter
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setValueFormatter(new IndexAxisValueFormatter(x_axis_date_list));
         }
 
         chart.animateY(1500);
@@ -361,7 +356,10 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
                         Integer min_hr = Integer.parseInt(document.get("min").toString());
                         Integer max_hr = Integer.parseInt(document.get("max").toString());
 
-                        date_list.add(date);
+                        String date_temp = date.substring(0, 4) + "/" + date.substring(4, 6) + "/" + date.substring(6, 8);
+                        date_list.add(date_temp);
+                        date_temp = date.substring(2, 4) + "/" + date.substring(4, 6) + "/" + date.substring(6, 8);
+                        x_axis_date_list.add(date_temp);
                         min_hr_list.add(min_hr);
                         max_hr_list.add(max_hr);
                         values.add(new BarEntry(
