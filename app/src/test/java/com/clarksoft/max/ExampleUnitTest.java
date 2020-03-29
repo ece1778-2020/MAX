@@ -11,7 +11,9 @@ import static org.junit.Assert.*;
  */
 public class ExampleUnitTest {
     @Test
-    public void addition_isCorrect() {
+    public void checkTimeIncreaseSuggestion_Correct() {
+        ProgressHints progress = new ProgressHints();
+        progress.checkTimeIncreaseSuggestion();
         assertEquals(4, 2 + 2);
     }
 }

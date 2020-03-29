@@ -77,6 +77,7 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
 
     private void updateUI(FirebaseUser user, Boolean firstRun) {
         if (user != null) {
+            finish();
             Intent intent = new Intent(this, NavigationActivity.class);
             startActivity(intent);
         } else if (!firstRun) {

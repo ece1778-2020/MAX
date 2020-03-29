@@ -33,6 +33,7 @@ public class EndSessionFragment extends Fragment {
     private String mParam2;
 
     private TextView total_exercise, target_exercise, max_hr, min_hr, date;
+    String initiator;
 
     public EndSessionFragment() {
         // Required empty public constructor
@@ -85,8 +86,8 @@ public class EndSessionFragment extends Fragment {
         String target_workout = getArguments().getString("target_workout");
         String max = getArguments().getString("max");
         String min = getArguments().getString("min");
-
-        String date_str = new SimpleDateFormat("dd/MMM/yyyy", Locale.CANADA).format((new Date()));
+        String date_str = getArguments().getString("date");
+        initiator = getArguments().getString("initiator");
 
         date.setText(date_str);
         total_exercise.setText(total_workout);
@@ -98,10 +99,15 @@ public class EndSessionFragment extends Fragment {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_frame, SessionFragment.newInstance(0,"",0,0));
-                transaction.addToBackStack(null);
-                transaction.commit();
+                if(initiator.equals("session")) {
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_frame, SessionFragment.newInstance(0, "", 0, 0));
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+                else if(initiator.equals("log")){
+                    getActivity().onBackPressed();
+                }
             }
         });
 

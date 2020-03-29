@@ -10,9 +10,11 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -84,13 +86,18 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
     private FirebaseFirestore db;
 
     private Button log_btn_share;
+    CardView log_main_rectangle;
 
     private Map<String, String> month_number = new HashMap<>();
 
     TextView log_date_view;
-    String max_date, min_date;
+    String max_date = "", min_date = "";
 
     ImageView log_calendar_icon;
+
+    ArrayList<String> date_list = new ArrayList<>();
+    ArrayList<Integer> min_hr_list = new ArrayList<>();
+    ArrayList<Integer> max_hr_list = new ArrayList<>();
 
     public LogFragment() {
         // Required empty public constructor
@@ -153,6 +160,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         log_btn_share = view.findViewById(R.id.log_btn_share);
         log_date_view = view.findViewById(R.id.log_date_view);
         log_calendar_icon = view.findViewById(R.id.log_calendar_icon);
+        log_main_rectangle = view.findViewById(R.id.log_main_rectangle);
 
         chart = view.findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
@@ -182,6 +190,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         xLabels.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         // chart.setDrawXLabels(false);
+        xLabels.setDrawLabels(false);
         // chart.setDrawYLabels(false);
 
         Legend l = chart.getLegend();
@@ -216,104 +225,15 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
                 date_picker();
             }
         });
+        log_main_rectangle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                date_picker();
+            }
+        });
 
         return view;
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.bar, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        switch (item.getItemId()) {
-//            case R.id.viewGithub: {
-//                Intent i = new Intent(Intent.ACTION_VIEW);
-//                i.setData(Uri.parse("https://github.com/PhilJay/MPAndroidChart/blob/master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/StackedBarActivity.java"));
-//                startActivity(i);
-//                break;
-//            }
-//            case R.id.actionToggleValues: {
-//                List<IBarDataSet> sets = chart.getData()
-//                        .getDataSets();
-//
-//                for (IBarDataSet iSet : sets) {
-//
-//                    BarDataSet set = (BarDataSet) iSet;
-//                    set.setDrawValues(!set.isDrawValuesEnabled());
-//                }
-//
-//                chart.invalidate();
-//                break;
-//            }
-//            case R.id.actionToggleIcons: {
-//                List<IBarDataSet> sets = chart.getData()
-//                        .getDataSets();
-//
-//                for (IBarDataSet iSet : sets) {
-//
-//                    BarDataSet set = (BarDataSet) iSet;
-//                    set.setDrawIcons(!set.isDrawIconsEnabled());
-//                }
-//
-//                chart.invalidate();
-//                break;
-//            }
-//            case R.id.actionToggleHighlight: {
-//                if (chart.getData() != null) {
-//                    chart.getData().setHighlightEnabled(!chart.getData().isHighlightEnabled());
-//                    chart.invalidate();
-//                }
-//                break;
-//            }
-//            case R.id.actionTogglePinch: {
-//                if (chart.isPinchZoomEnabled())
-//                    chart.setPinchZoom(false);
-//                else
-//                    chart.setPinchZoom(true);
-//
-//                chart.invalidate();
-//                break;
-//            }
-//            case R.id.actionToggleAutoScaleMinMax: {
-//                chart.setAutoScaleMinMaxEnabled(!chart.isAutoScaleMinMaxEnabled());
-//                chart.notifyDataSetChanged();
-//                break;
-//            }
-//            case R.id.actionToggleBarBorders: {
-//                for (IBarDataSet set : chart.getData().getDataSets())
-//                    ((BarDataSet) set).setBarBorderWidth(set.getBarBorderWidth() == 1.f ? 0.f : 1.f);
-//
-//                chart.invalidate();
-//                break;
-//            }
-//            case R.id.animateX: {
-//                chart.animateX(2000);
-//                break;
-//            }
-//            case R.id.animateY: {
-//                chart.animateY(2000);
-//                break;
-//            }
-//            case R.id.animateXY: {
-//
-//                chart.animateXY(2000, 2000);
-//                break;
-//            }
-//            case R.id.actionSave: {
-//                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-//                    saveToGallery();
-//                } else {
-//                    requestStoragePermission(chart);
-//                }
-//                break;
-//            }
-//        }
-//        return true;
-//    }
 
     @Override
     protected void saveToGallery() {
@@ -325,10 +245,42 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
 
         BarEntry entry = (BarEntry) e;
 
-        if (entry.getYVals() != null)
-            Log.i("VAL SELECTED", "Value: " + entry.getYVals()[h.getStackIndex()]);
-        else
-            Log.i("VAL SELECTED", "Value: " + entry.getY());
+        if (entry.getYVals() != null) {
+            int x_val = (int) entry.getX() - 1;
+            float above_hr = entry.getYVals()[2];
+            float in_hr = entry.getYVals()[1];
+            float below_hr = entry.getYVals()[0];
+            String date = date_list.get(x_val);
+            date = date.substring(0, 4) + "/" + date.substring(4, 6) + "/" + date.substring(6, 8);
+            Integer min = min_hr_list.get(x_val);
+            Integer max = max_hr_list.get(x_val);
+            openFragment(EndSessionFragment.newInstance("", ""), in_hr, above_hr, below_hr, max, min, date);
+        }
+    }
+
+    private void openFragment(Fragment fragment,
+                              Float target_exercise,
+                              Float above_hr,
+                              Float below_hr,
+                              Integer current_max,
+                              Integer current_min,
+                              String date) {
+
+        Float total_exercise = (target_exercise + above_hr + below_hr);
+
+        Bundle args = new Bundle();
+        args.putString("total_workout", String.format("%.2f min", total_exercise));
+        args.putString("target_workout", String.format("%.2f min", target_exercise));
+        args.putString("max", current_max.toString());
+        args.putString("min", current_min.toString());
+        args.putString("date", date);
+        args.putString("initiator", "log");
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_frame, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
@@ -376,6 +328,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
             chart.setData(data);
         }
 
+        chart.animateY(1500);
         chart.setFitBars(true);
         chart.invalidate();
     }
@@ -393,6 +346,11 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    date_list.clear();
+                    min_hr_list.clear();
+                    ;
+                    max_hr_list.clear();
+                    ;
                     QuerySnapshot session_data = task.getResult();
                     int i = 1;
                     for (QueryDocumentSnapshot document : session_data) {
@@ -400,7 +358,12 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
                         float db_in_hr = Integer.parseInt(document.get("in_hr").toString()) / 60.0f;
                         float db_above_hr = Integer.parseInt(document.get("above_hr").toString()) / 60.0f;
                         String date = document.get("date").toString();
+                        Integer min_hr = Integer.parseInt(document.get("min").toString());
+                        Integer max_hr = Integer.parseInt(document.get("max").toString());
 
+                        date_list.add(date);
+                        min_hr_list.add(min_hr);
+                        max_hr_list.add(max_hr);
                         values.add(new BarEntry(
                                 i,
                                 new float[]{db_below_hr, db_in_hr, db_above_hr},
@@ -413,9 +376,17 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
                         i++;
                     }
 
-                    set_data(values);
-                    min_date = min_date.substring(0, 4) + "/" + min_date.substring(4, 6) + "/" + min_date.substring(6, 8);
-                    max_date = max_date.substring(0, 4) + "/" + max_date.substring(4, 6) + "/" + max_date.substring(6, 8);
+                    if (values.size() > 0) {
+                        set_data(values);
+                    }
+                    else {
+                        values.clear();
+                        set_data(values);
+                    }
+                    if (!min_date.isEmpty()) {
+                        min_date = min_date.substring(0, 4) + "/" + min_date.substring(4, 6) + "/" + min_date.substring(6, 8);
+                        max_date = max_date.substring(0, 4) + "/" + max_date.substring(4, 6) + "/" + max_date.substring(6, 8);
+                    }
 
                     if (start_date == Integer.MIN_VALUE) {
                         log_date_view.setText(min_date + " - " + max_date);
@@ -440,7 +411,7 @@ public class LogFragment extends DemoBase implements OnChartValueSelectedListene
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/*");
         share.putExtra(Intent.EXTRA_STREAM, uri);
-        share.putExtra(Intent.EXTRA_TEXT, "Look at the progress I am making with the Max App!");
+        share.putExtra(Intent.EXTRA_TEXT, "Look at the progress I made with the Max App from " + min_date + " to " + max_date + "!");
         getContext().startActivity(Intent.createChooser(share, "Share your progress"));
     }
 

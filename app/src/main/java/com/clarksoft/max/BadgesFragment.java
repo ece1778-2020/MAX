@@ -109,10 +109,10 @@ public class BadgesFragment extends Fragment {
             add("Exercised every day in a week.");
             add("Exercised for 30min in one session.");
             add("Spent less than 10% of the exercise time in the low HR range.");
-            add("Exercised for 60 min in the target HR range range in one week.");
+            add("Exercised for 60 min in the target HR range in one week.");
             add("Did a whole session in the target HR range (longer than 5 min).");
             add("Did a whole week in the target HR range (sessions longer than 5 min).");
-            add("Exercise on the 25th of December.");
+            add("Exercised on the 25th of December.");
         }
     };
 
@@ -218,6 +218,62 @@ public class BadgesFragment extends Fragment {
         if(newbee){
             int index = badge_key.get("newbee");
             badgeUri.set(index, Uri.parse("android.resource://com.clarksoft.max/drawable/bee"));
+            badge_enabled.set(index, true);
+            badgesAdapter.notifyItemChanged(index);
+        }
+
+        if(exercise_star){
+            int index = badge_key.get("exercise_star");
+            badgeUri.set(index, Uri.parse("android.resource://com.clarksoft.max/drawable/star"));
+            badge_enabled.set(index, true);
+            badgesAdapter.notifyItemChanged(index);
+        }
+
+        if(rising_star){
+            int index = badge_key.get("rising_star");
+            badgeUri.set(index, Uri.parse("android.resource://com.clarksoft.max/drawable/rising_star"));
+            badge_enabled.set(index, true);
+            badgesAdapter.notifyItemChanged(index);
+        }
+
+        if(exercise_medal){
+            int index = badge_key.get("exercise_medal");
+            badgeUri.set(index, Uri.parse("android.resource://com.clarksoft.max/drawable/medal"));
+            badge_enabled.set(index, true);
+            badgesAdapter.notifyItemChanged(index);
+        }
+
+        if(move_that_body){
+            int index = badge_key.get("move_that_body");
+            badgeUri.set(index, Uri.parse("android.resource://com.clarksoft.max/drawable/skeleton"));
+            badge_enabled.set(index, true);
+            badgesAdapter.notifyItemChanged(index);
+        }
+
+        if(exercise_cup){
+            int index = badge_key.get("exercise_cup");
+            badgeUri.set(index, Uri.parse("android.resource://com.clarksoft.max/drawable/cup"));
+            badge_enabled.set(index, true);
+            badgesAdapter.notifyItemChanged(index);
+        }
+
+        if(i_live_for_the_applause){
+            int index = badge_key.get("i_live_for_the_applause");
+            badgeUri.set(index, Uri.parse("android.resource://com.clarksoft.max/drawable/clap"));
+            badge_enabled.set(index, true);
+            badgesAdapter.notifyItemChanged(index);
+        }
+
+        if(olympic){
+            int index = badge_key.get("olympic");
+            badgeUri.set(index, Uri.parse("android.resource://com.clarksoft.max/drawable/leaves"));
+            badge_enabled.set(index, true);
+            badgesAdapter.notifyItemChanged(index);
+        }
+
+        if(christmas){
+            int index = badge_key.get("christmas");
+            badgeUri.set(index, Uri.parse("android.resource://com.clarksoft.max/drawable/xmas"));
             badge_enabled.set(index, true);
             badgesAdapter.notifyItemChanged(index);
         }

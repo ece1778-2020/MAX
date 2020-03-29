@@ -2,6 +2,7 @@ package com.clarksoft.max;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -23,8 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +47,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -116,6 +121,11 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
     enum mediaPlayers {slow, fast};
     private Boolean sound_enabled = false;
 
+    private final Integer num_days = 30;
+    private Float total_in_hr = 0.0f;
+    private Integer num_sessions = 0, target_time = 0, oldest_date = 0;
+    ImageView session_notification_active;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -175,19 +185,22 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                 stopMedia(mediaPlayers.slow);
                 stopMedia(mediaPlayers.fast);
             } else if (bpm < min_hr) {
-                card.setCardBackgroundColor(Color.parseColor("#FFF1D346")); //yellow
+                int base_color = Color.parseColor("#00F1D346");
+                card.setCardBackgroundColor(cardColourManager(bpm, min_hr, max_hr, base_color)); //yellow
                 motivation_str = getString(R.string.session_str_seed_up);
 
                 stopMedia(mediaPlayers.fast);
                 startMedia(mediaPlayers.slow);
             } else if (bpm >= min_hr && bpm < max_hr) {
-                card.setCardBackgroundColor(Color.parseColor("#FF8BC34A")); // green
+                int base_color = Color.parseColor("#008BC34A");
+                card.setCardBackgroundColor(cardColourManager(bpm, min_hr, max_hr, base_color)); // green
                 motivation_str = getString(R.string.session_str_keep_up);
 
                 stopMedia(mediaPlayers.slow);
                 stopMedia(mediaPlayers.fast);
             } else if (bpm >= max_hr) {
-                card.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary)); //red
+                int base_color = Color.parseColor("#00EE5819");
+                card.setCardBackgroundColor(cardColourManager(bpm, min_hr, max_hr, base_color)); //red
                 motivation_str = getString(R.string.session_str_slow_down);
 
                 stopMedia(mediaPlayers.slow);
@@ -268,6 +281,9 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         session_btn_pause.setVisibility(View.INVISIBLE);
         session_btn_end.setVisibility(View.INVISIBLE);
 
+        session_notification_active = view.findViewById(R.id.session_notification_active);
+        session_notification_active.setVisibility(View.INVISIBLE);
+
         session_btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -319,6 +335,10 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                     cmr_offset += 1;
             }
         });
+
+
+        checkTimeIncreaseSuggestion();
+
 
         return view;
     }
@@ -465,6 +485,8 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         sessionData.put("above_hr", above_hr);
         sessionData.put("uid", userUUID);
         sessionData.put("date", date);
+        sessionData.put("min", current_min);
+        sessionData.put("max", current_max);
 
         if (db_key == null) {
 
@@ -480,6 +502,8 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                             below_hr = 0;
                             in_hr = 0;
                             above_hr = 0;
+                            current_min = Integer.MAX_VALUE;
+                            current_max = 0;
                         }
                     }).addOnFailureListener(this);
         }
@@ -509,6 +533,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                     if (document != null && document.exists()) {
                         max_hr = Integer.parseInt(document.get("max_hr").toString());
                         min_hr = Integer.parseInt(document.get("min_hr").toString());
+                        target_time = Integer.parseInt(document.get("target_time").toString());
                     } else {
                         Log.e("DB", "Document does not exist.");
                     }
@@ -542,12 +567,15 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
 
         Float total_exercise = (in_hr + above_hr + below_hr) / 60.0f;
         Float target_exercise = (in_hr) / 60.0f;
+        String date_str = new SimpleDateFormat("dd/MMM/yyyy", Locale.CANADA).format((new Date()));
 
         Bundle args = new Bundle();
         args.putString("total_workout", String.format("%.2f min", total_exercise));
         args.putString("target_workout", String.format("%.2f min", target_exercise));
         args.putString("max", current_max.toString());
         args.putString("min", current_min.toString());
+        args.putString("date", date_str);
+        args.putString("initiator", "session");
         fragment.setArguments(args);
 
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -675,5 +703,155 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
         } finally {
             audio_mutex.unlock();
         }
+    }
+
+    private void checkTimeIncreaseSuggestion(){
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, num_days * (-1));
+        String target_date = String.valueOf(calendar.get(Calendar.YEAR)) +
+                String.format("%02d", calendar.get(Calendar.MONTH) + 1) +
+                String.valueOf(calendar.get(Calendar.DATE));
+
+        int current_date = Integer.parseInt(new SimpleDateFormat("yyyyMMdd", Locale.CANADA).format((new Date())));
+        int one_month_back = Integer.parseInt(target_date);
+
+        Query userDataQuery = db.collection("session")
+                .whereEqualTo("uid", userUUID)
+                .orderBy("date")
+                .limit(1);
+        userDataQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    QuerySnapshot session_data = task.getResult();
+
+                    for (QueryDocumentSnapshot document : session_data) {
+                        oldest_date = Integer.parseInt(document.get("date").toString());
+                    }
+
+                    if(oldest_date <= one_month_back) {
+
+                        Query userDataQuery = db.collection("session")
+                                .whereEqualTo("uid", userUUID)
+                                .orderBy("date")
+                                .startAt(one_month_back)
+                                .endAt(current_date);
+                        userDataQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    QuerySnapshot session_data = task.getResult();
+
+                                    for (QueryDocumentSnapshot document : session_data) {
+                                        num_sessions++;
+                                        total_in_hr += Integer.parseInt(document.get("in_hr").toString()) / 60.0f;
+                                    }
+
+                                    num_sessions = (num_sessions>4)?num_sessions:4;
+
+                                    Float avg_session_time = total_in_hr / num_sessions;
+
+                                    DocumentReference userData = db.collection("settings1").document(userUUID);
+                                    userData.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document != null && document.exists()) {
+                                                    target_time = Integer.parseInt(document.get("target_time").toString());
+                                                } else {
+                                                    Log.e("DB", "Document does not exist.");
+                                                }
+                                            } else {
+                                                Log.e("DB", "", task.getException());
+                                            }
+
+
+                                            if (avg_session_time >= target_time && avg_session_time < 15) {
+                                                checkExerciseDays("Think about setting your \"Exercise goal\" in the User Settings page to 15 minutes in target HR range per week");
+                                            } else if (avg_session_time >= target_time && avg_session_time >= 15 && avg_session_time < 30) {
+                                                checkExerciseDays("Think about setting your \"Exercise goal\" in the User Settings page to 30 minutes in target HR range per week");
+                                            } else if (avg_session_time >= target_time && avg_session_time >= 30 && avg_session_time < 45) {
+                                                checkExerciseDays("Think about setting your \"Exercise goal\" in the User Settings page to 45 minutes in target HR range per week");
+                                            } else if (avg_session_time >= target_time && avg_session_time >= 45 && avg_session_time < 60) {
+                                                checkExerciseDays("Think about setting your \"Exercise goal\" in the User Settings page to 60 minutes in target HR range per week");
+                                            } else if (avg_session_time >= target_time && avg_session_time >= 60 && avg_session_time < 75) {
+                                                checkExerciseDays("Think about setting your \"Exercise goal\" in the User Settings page to 75 minutes in target HR range per week");
+                                            } else if (avg_session_time >= target_time && avg_session_time >= 75 && avg_session_time < 90) {
+                                                checkExerciseDays("Think about setting your \"Exercise goal\" in the User Settings page to 90 minutes in target HR range per week");
+                                            }
+                                            else{
+                                                checkExerciseDays("");
+                                            }
+
+                                        }
+                                    });
+
+                                } else {
+                                    Log.e("DB", "", task.getException());
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    Log.e("DB", "", task.getException());
+                }
+            }
+        });
+    }
+
+    private void checkExerciseDays(String target_suggestion){
+
+
+        if(!target_suggestion.isEmpty()) {
+            session_notification_active.setVisibility(View.VISIBLE);
+            session_notification_active.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                    alertDialogBuilder.setMessage(target_suggestion);
+                    alertDialogBuilder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            session_notification_active.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+
+                }
+            });
+        }
+
+    }
+
+    private Integer cardColourManager(Integer bpm, Integer min, Integer max, Integer base_colour){
+
+        final Integer range_offset = 10;
+        final Integer center = (min + max)/2;
+        Integer alpha_constant = 255;
+        Integer min_alpha_clip = 100;
+
+        if (bpm < min) {
+            alpha_constant = ((255 / range_offset) * (min - bpm)) + min_alpha_clip;
+            alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
+        }
+        else if (bpm >= min && bpm <= center) {
+            alpha_constant = ((255/(center - min)) * (bpm - min)) + min_alpha_clip;
+            alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
+        }
+        else if (bpm > center && bpm <= max) {
+            alpha_constant = ((255/(max-center)) * (max - bpm)) + min_alpha_clip;
+            alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
+        }
+        else if (bpm > max) {
+            alpha_constant = ((255/range_offset) * (bpm - max)) + min_alpha_clip;
+            alpha_constant = alpha_constant > 255 ? 255 : alpha_constant;
+        }
+
+        return base_colour + (alpha_constant << 24);
+
     }
 }
