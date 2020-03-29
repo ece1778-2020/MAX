@@ -6,13 +6,13 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.text.DecimalFormat;
 
-public class MyValueFormatter extends ValueFormatter
+public class YaxisFormatter extends ValueFormatter
 {
 
     private final DecimalFormat mFormat;
     private String suffix;
 
-    public MyValueFormatter(String suffix) {
+    public YaxisFormatter(String suffix) {
         mFormat = new DecimalFormat("###,###,###,##0.0");
         this.suffix = suffix;
     }
