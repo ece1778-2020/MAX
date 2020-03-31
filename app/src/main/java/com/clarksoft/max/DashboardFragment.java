@@ -238,7 +238,7 @@ public class DashboardFragment extends Fragment {
         calendar.add(Calendar.DAY_OF_YEAR, (day_in_week * (-1)));
         String target_date = String.valueOf(calendar.get(Calendar.YEAR)) +
                 String.format("%02d", calendar.get(Calendar.MONTH) + 1) +
-                String.valueOf(calendar.get(Calendar.DATE));
+                String.format("%02d", calendar.get(Calendar.DATE));
 
         int current_date = Integer.parseInt(new SimpleDateFormat("yyyyMMdd", Locale.CANADA).format((new Date())));
         int first_day_of_week = Integer.parseInt(target_date);

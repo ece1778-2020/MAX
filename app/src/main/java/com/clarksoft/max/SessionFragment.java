@@ -707,11 +707,13 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
 
     private void checkTimeIncreaseSuggestion(){
 
+        Log.e("avg_time", "Here" );
+
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, num_days * (-1));
         String target_date = String.valueOf(calendar.get(Calendar.YEAR)) +
                 String.format("%02d", calendar.get(Calendar.MONTH) + 1) +
-                String.valueOf(calendar.get(Calendar.DATE));
+                String.format("%02d", calendar.get(Calendar.DATE));
 
         int current_date = Integer.parseInt(new SimpleDateFormat("yyyyMMdd", Locale.CANADA).format((new Date())));
         int one_month_back = Integer.parseInt(target_date);
@@ -729,6 +731,10 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                     for (QueryDocumentSnapshot document : session_data) {
                         oldest_date = Integer.parseInt(document.get("date").toString());
                     }
+
+                    Log.e("avg_time", "oldest: " + oldest_date + " month_back: " + one_month_back);
+
+
 
                     if(oldest_date <= one_month_back) {
 
@@ -751,6 +757,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                                     num_sessions = (num_sessions>4)?num_sessions:4;
 
                                     Float avg_session_time = total_in_hr / num_sessions;
+                                    Log.e("avg_time", avg_session_time.toString() );
 
                                     DocumentReference userData = db.collection("settings1").document(userUUID);
                                     userData.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -794,6 +801,7 @@ public class SessionFragment extends Fragment implements OnCompleteListener<Quer
                             }
                         });
                     }
+                    Log.e("avg_time", "Now here" );
                 } else {
                     Log.e("DB", "", task.getException());
                 }
