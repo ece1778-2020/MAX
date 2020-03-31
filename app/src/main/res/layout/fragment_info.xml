@@ -4,16 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
     tools:context=".InfoFragment"
     >
 
     <ImageView
         android:id="@+id/info_img_heart_beat"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="350dp"
+        android:layout_height="100dp"
         android:layout_marginTop="50dp"
-        android:src="@drawable/max_heart_beat"
+        android:src="@drawable/max_logo_orange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,12 +21,59 @@
         android:id="@+id/info_lbl"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:padding="20dp"
+        android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:text="@string/info_lbl_text"
-        android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="parent"
+        android:padding="20dp"
+        android:text="@string/info_lbl_text_1"
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/info_img_heart_beat" />
+
+    <TextView
+        android:id="@+id/info_lbl2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="105dp"
+        android:gravity="center_horizontal"
+        android:padding="20dp"
+        android:text="@string/info_lbl_text_2"
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/info_img_heart_beat" />
+
+    <TextView
+        android:id="@+id/info_lbl3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="225dp"
+        android:gravity="center_horizontal"
+        android:padding="20dp"
+        android:text="@string/info_lbl_text_3"
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/info_img_heart_beat" />
+
+    <TextView
+        android:id="@+id/info_lbl4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="370dp"
+        android:gravity="center_horizontal"
+        android:padding="20dp"
+        android:text="@string/info_lbl_text_4"
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/info_img_heart_beat" />
 </androidx.constraintlayout.widget.ConstraintLayout>

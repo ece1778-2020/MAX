@@ -31,9 +31,10 @@
     <string name="dashboard_target">Target</string>
     <string name="dashboard_days">Days</string>
     <string name="dashboard_empty">--</string>
-    <string name="info_lbl_text">The MAX app helps stroke survivors improve their fitness by providing
-feedback regarding aerobic exercise performance. Users can enter their target heart rate range to get 
-personalized cues regarding how hard they need to exercise for.  </string>
+    <string name="info_lbl_text_1"> The MAX app helps you exercise effectively to improve your fitness after having a stroke.  </string>
+    <string name="info_lbl_text_2"> Using your personalized heart rate range, you will receive guidance on how hard you need to work while you are exercising.  </string>
+    <string name="info_lbl_text_3"> The MAX app also provides guidance on how to progress your exercise so you can maximize your fitness. It also allows you to track your progress over time and share your successes!  </string>
+    <string name="info_lbl_text_4"> To start your journey, head to the settings page.  </string>
     <string name="signup_inp_email_hint">Email</string>
     <string name="signup_inp_password_hint">Password</string>
     <string name="signup_inp_password_conf_hint">Confirm Password</string>
