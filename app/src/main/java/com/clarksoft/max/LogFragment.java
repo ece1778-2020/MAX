@@ -3,6 +3,7 @@ package com.clarksoft.max;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -180,6 +181,9 @@ public class LogFragment extends ChartBase implements OnChartValueSelectedListen
         XAxis xLabels = chart.getXAxis();
         xLabels.setPosition(XAxis.XAxisPosition.BOTTOM);
 
+        chart.setFitBars(true);
+        chart.invalidate();
+
         // chart.setDrawXLabels(false);
 //        xLabels.setDrawLabels(false);
         // chart.setDrawYLabels(false);
@@ -303,6 +307,17 @@ public class LogFragment extends ChartBase implements OnChartValueSelectedListen
             set1.setValues(values);
             chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
+
+            // Set the value formatter
+            XAxis xAxis = chart.getXAxis();
+
+            xAxis.setLabelCount(Math.min(x_axis_date_list.size(), 5));
+            xAxis.setGranularity(1f);
+            xAxis.setCenterAxisLabels(false);
+            xAxis.setGranularityEnabled(true);
+            x_axis_date_list.add(0,"");
+            xAxis.setValueFormatter(new IndexAxisValueFormatter(x_axis_date_list));
+
         } else {
             set1 = new BarDataSet(values, "");
             set1.setDrawIcons(false);
@@ -320,6 +335,12 @@ public class LogFragment extends ChartBase implements OnChartValueSelectedListen
 
             // Set the value formatter
             XAxis xAxis = chart.getXAxis();
+
+            xAxis.setLabelCount(Math.min(x_axis_date_list.size(), 5));
+            xAxis.setGranularity(1f);
+            xAxis.setCenterAxisLabels(false);
+            xAxis.setGranularityEnabled(true);
+            x_axis_date_list.add(0,"");
             xAxis.setValueFormatter(new IndexAxisValueFormatter(x_axis_date_list));
         }
 
@@ -342,10 +363,9 @@ public class LogFragment extends ChartBase implements OnChartValueSelectedListen
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     date_list.clear();
+                    x_axis_date_list.clear();
                     min_hr_list.clear();
-                    ;
                     max_hr_list.clear();
-                    ;
                     QuerySnapshot session_data = task.getResult();
                     int i = 1;
                     for (QueryDocumentSnapshot document : session_data) {
